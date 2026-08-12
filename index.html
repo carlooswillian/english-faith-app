@@ -13,6 +13,7 @@
       --text: #333333;
       --whatsapp-green: #25D366;
       --spotify-green: #1DB954;
+      --audio-purple: #8e44ad;
     }
 
     body {
@@ -39,7 +40,7 @@
       font-size: 1.4rem;
     }
 
-    /* Navegação por Abas Responsiva (Grid de 3 colunas) */
+    /* Navegação por Abas Responsiva */
     nav {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -149,10 +150,15 @@
       text-decoration: none;
       box-sizing: border-box;
       transition: opacity 0.2s ease;
+      margin-top: 8px;
     }
 
     .btn-action:active {
       opacity: 0.85;
+    }
+
+    .btn-audio {
+      background-color: var(--audio-purple);
     }
 
     .btn-wpp {
@@ -198,6 +204,7 @@
         <div class="english-text" id="oracao-en"></div>
         <div class="translation" id="oracao-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="oracao-tip"></span></div>
+        <button class="btn-action btn-audio" onclick="speakText('oracao-en')">🔊 Ouvir Pronúncia</button>
       </div>
 
       <!-- Versículo -->
@@ -206,6 +213,7 @@
         <div class="english-text" id="versiculo-en"></div>
         <div class="translation" id="versiculo-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="versiculo-tip"></span></div>
+        <button class="btn-action btn-audio" onclick="speakText('versiculo-en')">🔊 Ouvir Pronúncia</button>
       </div>
 
       <!-- Música -->
@@ -214,11 +222,8 @@
         <div class="english-text" id="musica-en"></div>
         <div class="translation" id="musica-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="musica-tip"></span></div>
-        
-        <!-- Botão Spotify -->
-        <a id="btn-spotify-link" href="#" target="_blank" class="btn-action btn-spotify">
-          🎧 Ouvir no Spotify
-        </a>
+        <button class="btn-action btn-audio" onclick="speakText('musica-en')">🔊 Ouvir Pronúncia</button>
+        <a id="btn-spotify-link" href="#" target="_blank" class="btn-action btn-spotify">🎧 Ouvir no Spotify</a>
       </div>
 
       <!-- The Chosen -->
@@ -227,6 +232,7 @@
         <div class="english-text" id="chosen-en"></div>
         <div class="translation" id="chosen-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="chosen-tip"></span></div>
+        <button class="btn-action btn-audio" onclick="speakText('chosen-en')">🔊 Ouvir Pronúncia</button>
       </div>
 
       <!-- Esposa -->
@@ -235,11 +241,8 @@
         <div class="english-text" id="esposa-en"></div>
         <div class="translation" id="esposa-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="esposa-tip"></span></div>
-        
-        <!-- Botão WhatsApp -->
-        <button class="btn-action btn-wpp" id="btn-copy-esposa" onclick="copyEsposaContent()">
-          📋 Copiar para o WhatsApp
-        </button>
+        <button class="btn-action btn-audio" onclick="speakText('esposa-en')">🔊 Ouvir Pronúncia</button>
+        <button class="btn-action btn-wpp" id="btn-copy-esposa" onclick="copyEsposaContent()">📋 Copiar para o WhatsApp</button>
       </div>
 
       <!-- Noite -->
@@ -248,6 +251,7 @@
         <div class="english-text" id="noite-en"></div>
         <div class="translation" id="noite-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="noite-tip"></span></div>
+        <button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir Pronúncia</button>
       </div>
     </div>
   </main>
@@ -289,7 +293,7 @@
       document.getElementById('musica-pt').innerText = data.musica.pt;
       document.getElementById('musica-tip').innerText = data.musica.tip;
 
-      // Configurar Link do Spotify
+      // Link do Spotify
       const spotifySearchUrl = `https://open.spotify.com/search/${encodeURIComponent(musicTitle)}`;
       document.getElementById('btn-spotify-link').href = spotifySearchUrl;
 
@@ -315,6 +319,7 @@
     }
 
     function openTab(tabName, evt) {
+      window.speechSynthesis.cancel(); // Para o áudio se trocar de aba
       const contents = document.querySelectorAll('.tab-content');
       contents.forEach(content => content.classList.remove('active'));
 
@@ -323,6 +328,20 @@
 
       document.getElementById('tab-' + tabName).classList.add('active');
       evt.currentTarget.classList.add('active');
+    }
+
+    /* Função para falar o texto em inglês */
+    function speakText(elementId) {
+      window.speechSynthesis.cancel(); // Cancela falas anteriores
+
+      const text = document.getElementById(elementId).innerText;
+      if (!text) return;
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US'; // Força sotaque americano nativo
+      utterance.rate = 0.85;    // Velocidade levemente reduzida para facilitar o aprendizado
+
+      window.speechSynthesis.speak(utterance);
     }
 
     function copyEsposaContent() {
