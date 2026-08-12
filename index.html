@@ -12,6 +12,7 @@
       --card-bg: #ffffff;
       --text: #333333;
       --whatsapp-green: #25D366;
+      --spotify-green: #1DB954;
     }
 
     body {
@@ -130,10 +131,9 @@
       color: var(--accent);
     }
 
-    /* Botão de Copiar para o WhatsApp */
-    .btn-copy-wpp {
+    /* Botões de Ação */
+    .btn-action {
       width: 100%;
-      background-color: var(--whatsapp-green);
       color: white;
       border: none;
       padding: 12px;
@@ -146,11 +146,21 @@
       justify-content: center;
       gap: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: background-color 0.2s ease;
+      text-decoration: none;
+      box-sizing: border-box;
+      transition: opacity 0.2s ease;
     }
 
-    .btn-copy-wpp:active {
-      background-color: #1ebe5d;
+    .btn-action:active {
+      opacity: 0.85;
+    }
+
+    .btn-wpp {
+      background-color: var(--whatsapp-green);
+    }
+
+    .btn-spotify {
+      background-color: var(--spotify-green);
     }
 
     /* Loading e Erro */
@@ -204,6 +214,11 @@
         <div class="english-text" id="musica-en"></div>
         <div class="translation" id="musica-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="musica-tip"></span></div>
+        
+        <!-- Botão Spotify -->
+        <a id="btn-spotify-link" href="#" target="_blank" class="btn-action btn-spotify">
+          🎧 Ouvir no Spotify
+        </a>
       </div>
 
       <!-- The Chosen -->
@@ -221,8 +236,8 @@
         <div class="translation" id="esposa-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="esposa-tip"></span></div>
         
-        <!-- Botão para Copiar -->
-        <button class="btn-copy-wpp" id="btn-copy-esposa" onclick="copyEsposaContent()">
+        <!-- Botão WhatsApp -->
+        <button class="btn-action btn-wpp" id="btn-copy-esposa" onclick="copyEsposaContent()">
           📋 Copiar para o WhatsApp
         </button>
       </div>
@@ -268,10 +283,15 @@
       document.getElementById('versiculo-tip').innerText = data.versiculo.tip;
 
       // Preencher Música
-      document.getElementById('musica-title').innerText = data.musica.title || "Trecho do Louvor";
+      const musicTitle = data.musica.title || "Trecho do Louvor";
+      document.getElementById('musica-title').innerText = musicTitle;
       document.getElementById('musica-en').innerText = data.musica.en;
       document.getElementById('musica-pt').innerText = data.musica.pt;
       document.getElementById('musica-tip').innerText = data.musica.tip;
+
+      // Configurar Link do Spotify
+      const spotifySearchUrl = `https://open.spotify.com/search/${encodeURIComponent(musicTitle)}`;
+      document.getElementById('btn-spotify-link').href = spotifySearchUrl;
 
       // Preencher The Chosen
       document.getElementById('chosen-en').innerText = data.the_chosen.en;
@@ -318,11 +338,9 @@
       navigator.clipboard.writeText(formattedText).then(() => {
         const btn = document.getElementById('btn-copy-esposa');
         btn.innerHTML = "✅ Copiado!";
-        btn.style.backgroundColor = "#20b153";
 
         setTimeout(() => {
           btn.innerHTML = "📋 Copiar para o WhatsApp";
-          btn.style.backgroundColor = "var(--whatsapp-green)";
         }, 2500);
       }).catch(err => {
         alert("Não foi possível copiar automaticamente.");
