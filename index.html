@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English & Faith</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #3498db;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    #date-display {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    /* Navegação por Abas */
+    nav {
+      display: flex;
+      overflow-x: auto;
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 80px;
+      padding: 12px 8px;
+      border: none;
+      background: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Conteúdo */
+    main {
+      flex: 1;
+      padding: 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .tab-content {
+      display: none;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .meta-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      color: var(--accent);
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .english-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+
+    .translation {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+      padding-left: 10px;
+      border-left: 3px solid #e0e0e0;
+    }
+
+    .tip-box {
+      background-color: #eef7fc;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      color: #2c3e50;
+    }
+
+    .tip-box strong {
+      color: var(--accent);
+    }
+
+    /* Loading e Erro */
+    #loading, #error-message {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.1rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>English & Faith</h1>
+    <div id="date-display">Carregando conteúdo...</div>
+  </header>
+
+  <nav id="tabs-nav" style="display: none;">
+    <button class="tab-btn active" onclick="openTab('oracao')">Oração</button>
+    <button class="tab-btn" onclick="openTab('versiculo')">Versículo</button>
+    <button class="tab-btn" onclick="openTab('musica')">Louvor</button>
+    <button class="tab-btn" onclick="openTab('chosen')">Chosen</button>
+    <button class="tab-btn" onclick="openTab('esposa')">Esposa</button>
+    <button class="tab-btn" onclick="openTab('noite')">Noite</button>
+  </nav>
+
+  <main>
+    <div id="loading">Buscando o estudo do dia...</div>
+    <div id="error-message" style="display: none;"></div>
+
+    <div id="content-area" style="display: none;">
+      <!-- Oração -->
+      <div id="tab-oracao" class="tab-content active">
+        <div class="meta-title">Oração Matinal</div>
+        <div class="english-text" id="oracao-en"></div>
+        <div class="translation" id="oracao-pt"></div>
+        <div class="tip-box"><strong>Dica:</strong> <span id="oracao-tip"></span></div>
+      </div>
+
+      <!-- Versículo -->
+      <div id="tab-versiculo" class="tab-content">
+        <div class="meta-title" id="versiculo-ref">Versículo do Dia</div>
+        <div class="english-text" id="versiculo-en"></div>
+        <div class="translation" id="versiculo-pt"></div>
+        <div class="tip-box"><strong>Dica:</strong> <span id="versiculo-tip"></span></div>
+      </div>
+
+      <!-- Música -->
+      <div id="tab-musica" class="tab-content">
+        <div class="meta-title" id="musica-title">Trecho do Louvor</div>
+        <div class="english-text" id="musica-en"></div>
+        <div class="translation" id="musica-pt"></div>
+        <div class="tip-box"><strong>Dica:</strong> <span id="musica-tip"></span></div>
+      </div>
+
+      <!-- The Chosen -->
+      <div id="tab-chosen" class="tab-content">
+        <div class="meta-title">The Chosen - Expressão Prática</div>
+        <div class="english-text" id="chosen-en"></div>
+        <div class="translation" id="chosen-pt"></div>
+        <div class="tip-box"><strong>Dica:</strong> <span id="chosen-tip"></span></div>
+      </div>
+
+      <!-- Esposa -->
+      <div id="tab-esposa" class="tab-content">
+        <div class="meta-title">Bênção para a Esposa</div>
+        <div class="english-text" id="esposa-en"></div>
+        <div class="translation" id="esposa-pt"></div>
+        <div class="tip-box"><strong>Dica:</strong> <span id="esposa-tip"></span></div>
+      </div>
+
+      <!-- Noite -->
+      <div id="tab-noite" class="tab-content">
+        <div class="meta-title">Assurança para a Noite</div>
+        <div class="english-text" id="noite-en"></div>
+        <div class="translation" id="noite-pt"></div>
+        <div class="tip-box"><strong>Dica:</strong> <span id="noite-tip"></span></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // COLE A URL DO SEU APPS SCRIPT ENTRE AS ASPAS ABAIXO:
+    const API_URL = "SUA_URL_DO_APPS_SCRIPT_AQUI";
+
+    async function fetchDailyContent() {
+      try {
+        const response = await fetch(API_URL);
+        const result = await response.json();
+
+        if (result.status === "success" && result.data) {
+          renderData(result.data, result.date);
+        } else {
+          showError("Nenhum conteúdo encontrado para hoje na planilha.");
+        }
+      } catch (error) {
+        showError("Erro ao carregar o conteúdo. Verifique sua conexão ou a URL da API.");
+      }
+    }
+
+    function renderData(data, date) {
+      document.getElementById('date-display').innerText = "Data: " + date;
+
+      // Preencher Oração
+      document.getElementById('oracao-en').innerText = data.oracao.en;
+      document.getElementById('oracao-pt').innerText = data.oracao.pt;
+      document.getElementById('oracao-tip').innerText = data.oracao.tip;
+
+      // Preencher Versículo
+      document.getElementById('versiculo-ref').innerText = data.versiculo.reference || "Versículo do Dia";
+      document.getElementById('versiculo-en').innerText = data.versiculo.en;
+      document.getElementById('versiculo-pt').innerText = data.versiculo.pt;
+      document.getElementById('versiculo-tip').innerText = data.versiculo.tip;
+
+      // Preencher Música
+      document.getElementById('musica-title').innerText = data.musica.title || "Trecho do Louvor";
+      document.getElementById('musica-en').innerText = data.musica.en;
+      document.getElementById('musica-pt').innerText = data.musica.pt;
+      document.getElementById('musica-tip').innerText = data.musica.tip;
+
+      // Preencher The Chosen
+      document.getElementById('chosen-en').innerText = data.the_chosen.en;
+      document.getElementById('chosen-pt').innerText = data.the_chosen.pt;
+      document.getElementById('chosen-tip').innerText = data.the_chosen.tip;
+
+      // Preencher Esposa
+      document.getElementById('esposa-en').innerText = data.esposa.en;
+      document.getElementById('esposa-pt').innerText = data.esposa.pt;
+      document.getElementById('esposa-tip').innerText = data.esposa.tip;
+
+      // Preencher Noite
+      document.getElementById('noite-en').innerText = data.noite.en;
+      document.getElementById('noite-pt').innerText = data.noite.pt;
+      document.getElementById('noite-tip').innerText = data.noite.tip;
+
+      // Exibir elementos
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('tabs-nav').style.display = 'flex';
+      document.getElementById('content-area').style.display = 'block';
+    }
+
+    function openTab(tabName) {
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(content => content.classList.remove('active'));
+
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById('tab-' + tabName).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function showError(msg) {
+      document.getElementById('loading').style.display = 'none';
+      const errDiv = document.getElementById('error-message');
+      errDiv.innerText = msg;
+      errDiv.style.display = 'block';
+    }
+
+    // Inicializa a busca
+    fetchDailyContent();
+  </script>
+</body>
+</html>
