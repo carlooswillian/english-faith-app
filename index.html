@@ -11,6 +11,7 @@
       --bg: #f8f9fa;
       --card-bg: #ffffff;
       --text: #333333;
+      --whatsapp-green: #25D366;
     }
 
     body {
@@ -122,10 +123,34 @@
       padding: 10px 14px;
       font-size: 0.85rem;
       color: #2c3e50;
+      margin-bottom: 1rem;
     }
 
     .tip-box strong {
       color: var(--accent);
+    }
+
+    /* Botão de Copiar para o WhatsApp */
+    .btn-copy-wpp {
+      width: 100%;
+      background-color: var(--whatsapp-green);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-copy-wpp:active {
+      background-color: #1ebe5d;
     }
 
     /* Loading e Erro */
@@ -195,6 +220,11 @@
         <div class="english-text" id="esposa-en"></div>
         <div class="translation" id="esposa-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="esposa-tip"></span></div>
+        
+        <!-- Botão para Copiar -->
+        <button class="btn-copy-wpp" id="btn-copy-esposa" onclick="copyEsposaContent()">
+          📋 Copiar para o WhatsApp
+        </button>
       </div>
 
       <!-- Noite -->
@@ -208,7 +238,6 @@
   </main>
 
   <script>
-    // COLE A URL DO SEU APPS SCRIPT ENTRE AS ASPAS ABAIXO:
     const API_URL = "https://script.google.com/macros/s/AKfycbyCP29SX9sJpJybhITICJtNAevvnHigyfGP9FnO7-h4U-z4e9kws5CZpOGwalOrS7qN/exec";
 
     async function fetchDailyContent() {
@@ -274,6 +303,30 @@
 
       document.getElementById('tab-' + tabName).classList.add('active');
       evt.currentTarget.classList.add('active');
+    }
+
+    function copyEsposaContent() {
+      const en = document.getElementById('esposa-en').innerText;
+      const pt = document.getElementById('esposa-pt').innerText;
+      
+      const formattedText = `✨ *Uma bênção para o seu dia:*
+
+🇺🇸 ${en}
+
+🇧🇷 ${pt}`;
+
+      navigator.clipboard.writeText(formattedText).then(() => {
+        const btn = document.getElementById('btn-copy-esposa');
+        btn.innerHTML = "✅ Copiado!";
+        btn.style.backgroundColor = "#20b153";
+
+        setTimeout(() => {
+          btn.innerHTML = "📋 Copiar para o WhatsApp";
+          btn.style.backgroundColor = "var(--whatsapp-green)";
+        }, 2500);
+      }).catch(err => {
+        alert("Não foi possível copiar automaticamente.");
+      });
     }
 
     function showError(msg) {
