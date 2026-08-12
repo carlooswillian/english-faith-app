@@ -37,17 +37,12 @@
       font-size: 1.4rem;
     }
 
-    #date-display {
-      font-size: 0.85rem;
-      opacity: 0.8;
-      margin-top: 4px;
-    }
-
-    /* Navegação por Abas */
+    /* Navegação por Abas Responsiva (Grid de 3 colunas) */
     nav {
-      display: flex;
-      overflow-x: auto;
-      background: white;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #e0e0e0;
       border-bottom: 1px solid #e0e0e0;
       position: sticky;
       top: 0;
@@ -55,28 +50,28 @@
     }
 
     .tab-btn {
-      flex: 1;
-      min-width: 80px;
-      padding: 12px 8px;
+      padding: 12px 4px;
       border: none;
-      background: none;
+      background: #ffffff;
       font-size: 0.85rem;
       font-weight: 600;
       color: #666;
       cursor: pointer;
+      text-align: center;
       border-bottom: 3px solid transparent;
-      white-space: nowrap;
+      transition: all 0.2s ease;
     }
 
     .tab-btn.active {
       color: var(--accent);
+      background: #f0f8ff;
       border-bottom-color: var(--accent);
     }
 
     /* Conteúdo */
     main {
       flex: 1;
-      padding: 1.5rem;
+      padding: 1.2rem;
       max-width: 600px;
       margin: 0 auto;
       width: 100%;
@@ -96,7 +91,7 @@
     }
 
     .meta-title {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
       color: var(--accent);
       letter-spacing: 1px;
@@ -105,7 +100,7 @@
     }
 
     .english-text {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 600;
       color: var(--primary);
       line-height: 1.4;
@@ -113,7 +108,7 @@
     }
 
     .translation {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #555;
       line-height: 1.4;
       margin-bottom: 1rem;
@@ -125,7 +120,7 @@
       background-color: #eef7fc;
       border-radius: 8px;
       padding: 10px 14px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #2c3e50;
     }
 
@@ -137,7 +132,7 @@
     #loading, #error-message {
       text-align: center;
       padding: 2rem;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: #666;
     }
   </style>
@@ -146,16 +141,15 @@
 
   <header>
     <h1>English & Faith</h1>
-    <div id="date-display">Carregando conteúdo...</div>
   </header>
 
   <nav id="tabs-nav" style="display: none;">
-    <button class="tab-btn active" onclick="openTab('oracao')">Oração</button>
-    <button class="tab-btn" onclick="openTab('versiculo')">Versículo</button>
-    <button class="tab-btn" onclick="openTab('musica')">Louvor</button>
-    <button class="tab-btn" onclick="openTab('chosen')">Chosen</button>
-    <button class="tab-btn" onclick="openTab('esposa')">Esposa</button>
-    <button class="tab-btn" onclick="openTab('noite')">Noite</button>
+    <button class="tab-btn active" onclick="openTab('oracao', event)">Oração</button>
+    <button class="tab-btn" onclick="openTab('versiculo', event)">Versículo</button>
+    <button class="tab-btn" onclick="openTab('musica', event)">Louvor</button>
+    <button class="tab-btn" onclick="openTab('chosen', event)">Chosen</button>
+    <button class="tab-btn" onclick="openTab('esposa', event)">Esposa</button>
+    <button class="tab-btn" onclick="openTab('noite', event)">Noite</button>
   </nav>
 
   <main>
@@ -223,7 +217,7 @@
         const result = await response.json();
 
         if (result.status === "success" && result.data) {
-          renderData(result.data, result.date);
+          renderData(result.data);
         } else {
           showError("Nenhum conteúdo encontrado para hoje na planilha.");
         }
@@ -232,9 +226,7 @@
       }
     }
 
-    function renderData(data, date) {
-      document.getElementById('date-display').innerText = "Data: " + date;
-
+    function renderData(data) {
       // Preencher Oração
       document.getElementById('oracao-en').innerText = data.oracao.en;
       document.getElementById('oracao-pt').innerText = data.oracao.pt;
@@ -269,11 +261,11 @@
 
       // Exibir elementos
       document.getElementById('loading').style.display = 'none';
-      document.getElementById('tabs-nav').style.display = 'flex';
+      document.getElementById('tabs-nav').style.display = 'grid';
       document.getElementById('content-area').style.display = 'block';
     }
 
-    function openTab(tabName) {
+    function openTab(tabName, evt) {
       const contents = document.querySelectorAll('.tab-content');
       contents.forEach(content => content.classList.remove('active'));
 
@@ -281,7 +273,7 @@
       buttons.forEach(btn => btn.classList.remove('active'));
 
       document.getElementById('tab-' + tabName).classList.add('active');
-      event.currentTarget.classList.add('active');
+      evt.currentTarget.classList.add('active');
     }
 
     function showError(msg) {
@@ -291,7 +283,6 @@
       errDiv.style.display = 'block';
     }
 
-    // Inicializa a busca
     fetchDailyContent();
   </script>
 </body>
