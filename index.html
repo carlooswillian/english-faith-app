@@ -339,7 +339,7 @@
       <div id="tab-palavras" class="tab-content">
         <div class="meta-title">Palavras e Expressões de Hoje</div>
         <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
-          Selecione as palavras que você quer praticar para enviá-las ao seu banco de dados do Anki:
+          Selecione as frases que você quer praticar para enviá-las ao seu banco de dados do Anki:
         </p>
         <div id="words-list"></div>
       </div>
@@ -448,7 +448,7 @@
       document.getElementById('content-area').style.display = 'block';
     }
 
-    /* Gera a lista de palavras/frases individuais do dia */
+    /* Gera a lista de frases individuais do dia */
     function renderWordsList(data) {
       const container = document.getElementById('words-list');
       container.innerHTML = '';
@@ -492,6 +492,8 @@
       try {
         await fetch(API_URL, {
           method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: 'ADD', en: en, pt: pt, tip: tip })
         });
       } catch (e) {
@@ -544,6 +546,8 @@
       try {
         await fetch(API_URL, {
           method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: 'REVIEW', id: card.id, difficulty: difficulty })
         });
       } catch (e) {
