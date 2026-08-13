@@ -259,6 +259,21 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyCP29SX9sJpJybhITICJtNAevvnHigyfGP9FnO7-h4U-z4e9kws5CZpOGwalOrS7qN/exec";
 
+    // Cache local de vozes
+    let cachedVoices = [];
+
+    function loadVoices() {
+      if ('speechSynthesis' in window) {
+        cachedVoices = window.speechSynthesis.getVoices();
+      }
+    }
+
+    // Inicializa o carregamento de vozes (assíncrono no Chrome/Android)
+    if ('speechSynthesis' in window) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
     async function fetchDailyContent() {
       try {
         const response = await fetch(API_URL);
@@ -319,7 +334,7 @@
     }
 
     function openTab(tabName, evt) {
-      window.speechSynthesis.cancel(); // Para o áudio se trocar de aba
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       const contents = document.querySelectorAll('.tab-content');
       contents.forEach(content => content.classList.remove('active'));
 
@@ -330,16 +345,33 @@
       evt.currentTarget.classList.add('active');
     }
 
-    /* Função para falar o texto em inglês */
+    /* Função otimizada para buscar e utilizar a melhor voz em inglês disponível */
     function speakText(elementId) {
-      window.speechSynthesis.cancel(); // Cancela falas anteriores
+      if (!('speechSynthesis' in window)) {
+        alert("Seu navegador não suporta a função de voz.");
+        return;
+      }
+
+      window.speechSynthesis.cancel();
 
       const text = document.getElementById(elementId).innerText;
       if (!text) return;
 
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US'; // Força sotaque americano nativo
-      utterance.rate = 0.85;    // Velocidade levemente reduzida para facilitar o aprendizado
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85; // Levemente mais pausado para facilitação do aprendizado
+
+      const voices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
+
+      // Filtra prioritariamente por vozes de alta qualidade (Google / Natural / Microsoft / Apple)
+      const selectedVoice = voices.find(v => 
+        v.lang.replace('_', '-').startsWith('en-US') && 
+        (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online') || v.name.includes('Samantha') || v.name.includes('Jenny') || v.name.includes('Zira'))
+      ) || voices.find(v => v.lang.replace('_', '-').startsWith('en'));
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
 
       window.speechSynthesis.speak(utterance);
     }
