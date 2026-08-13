@@ -185,9 +185,9 @@
     }
 
     .word-info { flex: 1; padding-right: 10px; }
-    .word-en { font-weight: bold; color: var(--primary); font-size: 1rem; }
-    .word-pt { font-size: 0.85rem; color: #666; }
-    .word-tag { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; font-weight: bold; }
+    .word-en { font-weight: bold; color: var(--primary); font-size: 1.05rem; }
+    .word-pt { font-size: 0.9rem; color: #555; margin-top: 2px; }
+    .word-tag { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
 
     .btn-add-word {
       background-color: #e67e22;
@@ -197,7 +197,7 @@
       padding: 8px 12px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
 
     .btn-add-word.added {
@@ -335,11 +335,11 @@
         <button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir Pronúncia</button>
       </div>
 
-      <!-- ABA PALAVRAS DO DIA (SELEÇÃO) -->
+      <!-- ABA PALAVRAS DO DIA (SELEÇÃO INDIVIDUAL) -->
       <div id="tab-palavras" class="tab-content">
         <div class="meta-title">Palavras e Expressões de Hoje</div>
         <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
-          Selecione as frases que você quer praticar para enviá-las ao seu banco de dados do Anki:
+          Toque no botão ➕ para enviar os termos e expressões selecionados ao seu banco de dados para estudo:
         </p>
         <div id="words-list"></div>
       </div>
@@ -448,33 +448,28 @@
       document.getElementById('content-area').style.display = 'block';
     }
 
-    /* Gera a lista de frases individuais do dia */
+    /* Exibe termos e expressões concisos gerados pelo Gemini */
     function renderWordsList(data) {
       const container = document.getElementById('words-list');
       container.innerHTML = '';
 
-      const sections = [
-        { name: 'Oração', key: 'oracao' },
-        { name: 'Versículo', key: 'versiculo' },
-        { name: 'Louvor', key: 'musica' },
-        { name: 'The Chosen', key: data.the_chosen ? 'the_chosen' : 'chosen' },
-        { name: 'Esposa', key: 'esposa' },
-        { name: 'Noite', key: 'noite' }
-      ];
+      const vocabList = data.vocabulario_dia || [];
 
-      sections.forEach(sec => {
-        const item = data[sec.key];
-        if (!item) return;
+      if (vocabList.length === 0) {
+        container.innerHTML = '<p style="font-size: 0.85rem; color: #666;">Rode o gerador no Apps Script para obter as palavras individuais do dia.</p>';
+        return;
+      }
 
+      vocabList.forEach(item => {
         const div = document.createElement('div');
         div.className = 'word-item';
         div.innerHTML = `
           <div class="word-info">
-            <div class="word-tag">${sec.name}</div>
+            <div class="word-tag">${item.tag || 'Vocabulário'}</div>
             <div class="word-en">${item.en}</div>
             <div class="word-pt">${item.pt}</div>
           </div>
-          <button class="btn-add-word" onclick="saveSingleWord(this, '${encodeURIComponent(item.en)}', '${encodeURIComponent(item.pt)}', '${encodeURIComponent(item.tip)}')">➕</button>
+          <button class="btn-add-word" onclick="saveSingleWord(this, '${encodeURIComponent(item.en)}', '${encodeURIComponent(item.pt)}', '${encodeURIComponent(item.tip || '')}')">➕</button>
         `;
         container.appendChild(div);
       });
@@ -525,7 +520,7 @@
       
       document.getElementById('anki-card-en').innerText = card.en;
       document.getElementById('anki-card-pt').innerText = card.pt;
-      document.getElementById('anki-card-tip').innerText = card.tip;
+      document.getElementById('anki-card-tip').innerText = card.tip || "";
 
       document.getElementById('anki-card-back').style.display = 'none';
       document.getElementById('anki-controls').style.display = 'none';
