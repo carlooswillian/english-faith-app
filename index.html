@@ -463,23 +463,35 @@
       vocabList.forEach(item => {
         const div = document.createElement('div');
         div.className = 'word-item';
-        div.innerHTML = `
-          <div class="word-info">
-            <div class="word-tag">${item.tag || 'Vocabulário'}</div>
-            <div class="word-en">${item.en}</div>
-            <div class="word-pt">${item.pt}</div>
-          </div>
-          <button class="btn-add-word" onclick="saveSingleWord(this, '${encodeURIComponent(item.en)}', '${encodeURIComponent(item.pt)}', '${encodeURIComponent(item.tip || '')}')">➕</button>
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'word-info';
+        infoDiv.innerHTML = `
+          <div class="word-tag">${item.tag || 'Vocabulário'}</div>
+          <div class="word-en">${item.en}</div>
+          <div class="word-pt">${item.pt}</div>
         `;
+
+        const btn = document.createElement('button');
+        btn.className = 'btn-add-word';
+        btn.innerText = '➕';
+        
+        // Armazena os dados via dataset para impedir erros com aspas/apóstrofos
+        btn.dataset.en = item.en || '';
+        btn.dataset.pt = item.pt || '';
+        btn.dataset.tip = item.tip || '';
+
+        btn.onclick = function() {
+          saveSingleWord(this, this.dataset.en, this.dataset.pt, this.dataset.tip);
+        };
+
+        div.appendChild(infoDiv);
+        div.appendChild(btn);
         container.appendChild(div);
       });
     }
 
-    async function saveSingleWord(btn, enEnc, ptEnc, tipEnc) {
-      const en = decodeURIComponent(enEnc);
-      const pt = decodeURIComponent(ptEnc);
-      const tip = decodeURIComponent(tipEnc);
-
+    async function saveSingleWord(btn, en, pt, tip) {
       btn.classList.add('added');
       btn.innerText = '✅';
       btn.disabled = true;
