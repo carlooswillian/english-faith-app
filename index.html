@@ -30,12 +30,77 @@
       min-height: 100vh;
     }
 
+    /* Modal / Tela de Bloqueio por PIN */
+    #lock-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--primary);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .pin-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .pin-input {
+      width: 80%;
+      padding: 12px;
+      font-size: 1.5rem;
+      letter-spacing: 8px;
+      text-align: center;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 8px;
+      margin: 1rem 0;
+      outline: none;
+    }
+
+    .pin-input::placeholder { color: rgba(255, 255, 255, 0.5); letter-spacing: 0; font-size: 0.9rem; }
+
+    .btn-unlock {
+      width: 85%;
+      padding: 12px;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .pin-error {
+      color: #ff6b6b;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      display: none;
+    }
+
     header {
       background-color: var(--primary);
       color: white;
       padding: 1rem;
       text-align: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
     }
 
     header h1 {
@@ -43,7 +108,19 @@
       font-size: 1.4rem;
     }
 
-    /* Navegação por Abas Responsiva */
+    .btn-lock-app {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* Navegação por Abas */
     nav {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -182,6 +259,18 @@
       padding: 12px;
       border-radius: 8px;
       margin-bottom: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .word-item.fade-out {
+      opacity: 0;
+      transform: translateX(30px);
+      margin-bottom: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      height: 0;
+      overflow: hidden;
+      border: none;
     }
 
     .word-info { flex: 1; padding-right: 10px; }
@@ -198,10 +287,6 @@
       font-weight: bold;
       cursor: pointer;
       font-size: 1rem;
-    }
-
-    .btn-add-word.added {
-      background-color: #2ecc71;
     }
 
     /* Flashcard Anki Styles */
@@ -259,8 +344,20 @@
 </head>
 <body>
 
+  <!-- Tela de Desbloqueio por PIN -->
+  <div id="lock-screen">
+    <div class="pin-card">
+      <h2 style="margin-top:0;">English & Faith</h2>
+      <p style="font-size:0.9rem; color:#ddd;">Digite o seu PIN de acesso</p>
+      <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••" />
+      <button class="btn-unlock" onclick="verifyPin()">Entrar</button>
+      <div id="pin-error" class="pin-error">PIN incorreto. Tente novamente.</div>
+    </div>
+  </div>
+
   <header>
     <h1>English & Faith</h1>
+    <button class="btn-lock-app" onclick="lockApp()" title="Bloquear App">🔒</button>
   </header>
 
   <nav id="tabs-nav" style="display: none;">
@@ -335,11 +432,11 @@
         <button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir Pronúncia</button>
       </div>
 
-      <!-- ABA PALAVRAS DO DIA (SELEÇÃO INDIVIDUAL) -->
+      <!-- ABA PALAVRAS DO DIA -->
       <div id="tab-palavras" class="tab-content">
         <div class="meta-title">Palavras e Expressões de Hoje</div>
         <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
-          Toque no botão ➕ para enviar os termos e expressões selecionados ao seu banco de dados para estudo:
+          Toque no botão ➕ para adicionar a palavra aos flashcards. Ela será removida desta lista para evitar duplicidades:
         </p>
         <div id="words-list"></div>
       </div>
@@ -379,12 +476,47 @@
   </main>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyCP29SX9sJpJybhITICJtNAevvnHigyfGP9FnO7-h4U-z4e9kws5CZpOGwalOrS7qN/exec";
+    const API_URL = "[https://script.google.com/macros/s/AKfycbyCP29SX9sJpJybhITICJtNAevvnHigyfGP9FnO7-h4U-z4e9kws5CZpOGwalOrS7qN/exec](https://script.google.com/macros/s/AKfycbyCP29SX9sJpJybhITICJtNAevvnHigyfGP9FnO7-h4U-z4e9kws5CZpOGwalOrS7qN/exec)";
+    
+    // CONFIGURE AQUI O SEU PIN DE ACESSO
+    const CORRECT_PIN = "1234";
 
     let cachedVoices = [];
     let currentDailyData = {};
     let cardsToReview = [];
     let currentCardIndex = 0;
+
+    // Lógica de Segurança (PIN)
+    function checkPinOnLoad() {
+      const savedPin = localStorage.getItem("app_unlocked");
+      if (savedPin === "true") {
+        document.getElementById("lock-screen").style.display = "none";
+        fetchDailyContent();
+      }
+    }
+
+    function verifyPin() {
+      const inputPin = document.getElementById("pin-input").value;
+      if (inputPin === CORRECT_PIN) {
+        localStorage.setItem("app_unlocked", "true");
+        document.getElementById("lock-screen").style.display = "none";
+        document.getElementById("pin-error").style.display = "none";
+        fetchDailyContent();
+      } else {
+        document.getElementById("pin-error").style.display = "block";
+      }
+    }
+
+    function lockApp() {
+      localStorage.removeItem("app_unlocked");
+      document.getElementById("pin-input").value = "";
+      document.getElementById("lock-screen").style.display = "flex";
+    }
+
+    // Suporte a pressionar Enter no campo de PIN
+    document.getElementById("pin-input").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") { verifyPin(); }
+    });
 
     function loadVoices() {
       if ('speechSynthesis' in window) cachedVoices = window.speechSynthesis.getVoices();
@@ -428,7 +560,7 @@
       document.getElementById('musica-en').innerText = data.musica.en;
       document.getElementById('musica-pt').innerText = data.musica.pt;
       document.getElementById('musica-tip').innerText = data.musica.tip;
-      document.getElementById('btn-spotify-link').href = `https://open.spotify.com/search/${encodeURIComponent(musicTitle)}`;
+      document.getElementById('btn-spotify-link').href = `[https://open.spotify.com/search/$](https://open.spotify.com/search/$){encodeURIComponent(musicTitle)}`;
 
       const chosenKey = data.the_chosen ? 'the_chosen' : 'chosen';
       document.getElementById('chosen-en').innerText = data[chosenKey].en;
@@ -448,7 +580,6 @@
       document.getElementById('content-area').style.display = 'block';
     }
 
-    /* Exibe termos e expressões concisos gerados pelo Gemini */
     function renderWordsList(data) {
       const container = document.getElementById('words-list');
       container.innerHTML = '';
@@ -456,13 +587,14 @@
       const vocabList = data.vocabulario_dia || [];
 
       if (vocabList.length === 0) {
-        container.innerHTML = '<p style="font-size: 0.85rem; color: #666;">Rode o gerador no Apps Script para obter as palavras individuais do dia.</p>';
+        container.innerHTML = '<p style="font-size: 0.85rem; color: #2ecc71; text-align: center; padding: 1rem;">✨ Todas as palavras de hoje já estão salvas nos seus Flashcards!</p>';
         return;
       }
 
-      vocabList.forEach(item => {
+      vocabList.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'word-item';
+        div.id = `word-item-${index}`;
 
         const infoDiv = document.createElement('div');
         infoDiv.className = 'word-info';
@@ -476,13 +608,13 @@
         btn.className = 'btn-add-word';
         btn.innerText = '➕';
         
-        // Armazena os dados via dataset para impedir erros com aspas/apóstrofos
         btn.dataset.en = item.en || '';
         btn.dataset.pt = item.pt || '';
         btn.dataset.tip = item.tip || '';
+        btn.dataset.index = index;
 
         btn.onclick = function() {
-          saveSingleWord(this, this.dataset.en, this.dataset.pt, this.dataset.tip);
+          saveSingleWord(this, this.dataset.en, this.dataset.pt, this.dataset.tip, this.dataset.index);
         };
 
         div.appendChild(infoDiv);
@@ -491,10 +623,21 @@
       });
     }
 
-    async function saveSingleWord(btn, en, pt, tip) {
-      btn.classList.add('added');
-      btn.innerText = '✅';
+    async function saveSingleWord(btn, en, pt, tip, index) {
       btn.disabled = true;
+      const parentCard = document.getElementById(`word-item-${index}`);
+
+      // Remove o item da tela suavemente
+      if (parentCard) {
+        parentCard.classList.add('fade-out');
+        setTimeout(() => {
+          parentCard.remove();
+          const container = document.getElementById('words-list');
+          if (container.children.length === 0) {
+            container.innerHTML = '<p style="font-size: 0.85rem; color: #2ecc71; text-align: center; padding: 1rem;">✨ Todas as palavras de hoje já estão salvas nos seus Flashcards!</p>';
+          }
+        }, 300);
+      }
 
       try {
         await fetch(API_URL, {
@@ -616,7 +759,8 @@
       errDiv.style.display = 'block';
     }
 
-    fetchDailyContent();
+    // Inicializa verificando a autenticação
+    checkPinOnLoad();
   </script>
 </body>
 </html>
