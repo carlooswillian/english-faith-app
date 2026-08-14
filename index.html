@@ -476,8 +476,8 @@
   </main>
 
   <script>
-    const API_URL = "[https://script.google.com/macros/s/AKfycbyCP29SX9sJpJybhITICJtNAevvnHigyfGP9FnO7-h4U-z4e9kws5CZpOGwalOrS7qN/exec](https://script.google.com/macros/s/AKfycbyCP29SX9sJpJybhITICJtNAevvnHigyfGP9FnO7-h4U-z4e9kws5CZpOGwalOrS7qN/exec)";
-    
+    const API_URL = "https://script.google.com/macros/s/AKfycbyCP29SX9sJpJybhITICJtNAevvnHigyfGP9FnO7-h4U-z4e9kws5CZpOGwalOrS7qN/exec";
+
     // CONFIGURE AQUI O SEU PIN DE ACESSO
     const CORRECT_PIN = "1304";
 
@@ -560,7 +560,7 @@
       document.getElementById('musica-en').innerText = data.musica.en;
       document.getElementById('musica-pt').innerText = data.musica.pt;
       document.getElementById('musica-tip').innerText = data.musica.tip;
-      document.getElementById('btn-spotify-link').href = `[https://open.spotify.com/search/$](https://open.spotify.com/search/$){encodeURIComponent(musicTitle)}`;
+      document.getElementById('btn-spotify-link').href = `https://open.spotify.com/search/${encodeURIComponent(musicTitle)}`;
 
       const chosenKey = data.the_chosen ? 'the_chosen' : 'chosen';
       document.getElementById('chosen-en').innerText = data[chosenKey].en;
