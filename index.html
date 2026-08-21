@@ -740,6 +740,25 @@
       window.speechSynthesis.speak(utterance);
     }
 
+    async function concluirEstudoDoDia() {
+  if (!confirm("Deseja concluir os estudos de hoje e avançar para o próximo dia?")) return;
+  
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'NEXT_DAY' })
+    });
+    
+    alert("Parabéns por concluir o dia de hoje! O app será recarregado.");
+    location.reload();
+  } catch (e) {
+    console.error("Erro ao avançar o dia:", e);
+  }
+}
+
+
     function copyEsposaContent() {
       const en = document.getElementById('esposa-en').innerText;
       const pt = document.getElementById('esposa-pt').innerText;
