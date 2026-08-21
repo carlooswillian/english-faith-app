@@ -5,76 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>English & Faith</title>
   <style>
-    :root {
-      --primary: #2c3e50;
-      --accent: #3498db;
-      --bg: #f8f9fa;
-      --card-bg: #ffffff;
-      --text: #333333;
-      --whatsapp-green: #25D366;
-      --spotify-green: #1DB954;
-      --audio-purple: #8e44ad;
-      --anki-hard: #e74c3c;
-      --anki-good: #f39c12;
-      --anki-easy: #2ecc71;
-    }
-
+    :root { --primary: #2c3e50; --accent: #3498db; --bg: #f8f9fa; --card-bg: #ffffff; --text: #333333; --whatsapp-green: #25D366; --spotify-green: #1DB954; --audio-purple: #8e44ad; --anki-hard: #e74c3c; --anki-good: #f39c12; --anki-easy: #2ecc71; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-
-    #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--primary); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 20px; box-sizing: border-box; }
-    .pin-card { background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 12px; text-align: center; max-width: 320px; width: 100%; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--primary); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 20px; }
+    .pin-card { background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 12px; text-align: center; max-width: 320px; width: 100%; backdrop-filter: blur(10px); }
     .pin-input { width: 80%; padding: 12px; font-size: 1.5rem; letter-spacing: 8px; text-align: center; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.2); color: white; border-radius: 8px; margin: 1rem 0; outline: none; }
     .btn-unlock { width: 85%; padding: 12px; background-color: var(--accent); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; }
-    .pin-error { color: #ff6b6b; font-size: 0.85rem; margin-top: 8px; display: none; }
-
-    header { background-color: var(--primary); color: white; padding: 1rem; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; }
-    header h1 { margin: 0; font-size: 1.4rem; }
-    .btn-lock-app { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
-
-    nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e0e0e0; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 10; }
-    .tab-btn { padding: 12px 2px; border: none; background: #ffffff; font-size: 0.75rem; font-weight: 600; color: #666; cursor: pointer; text-align: center; border-bottom: 3px solid transparent; transition: all 0.2s ease; }
+    .pin-error { color: #ff6b6b; margin-top: 8px; display: none; }
+    header { background-color: var(--primary); color: white; padding: 1rem; text-align: center; position: relative; }
+    .btn-lock-app { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: white; cursor: pointer; }
+    nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e0e0e0; position: sticky; top: 0; z-index: 10; }
+    .tab-btn { padding: 10px 2px; border: none; background: #ffffff; font-size: 0.7rem; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; }
     .tab-btn.active { color: var(--accent); background: #f0f8ff; border-bottom-color: var(--accent); }
-    .tab-btn.anki-tab { background: #fff8e7; color: #d35400; }
-    .tab-btn.anki-tab.active { background: #ffeaa7; border-bottom-color: #d35400; }
-
     main { flex: 1; padding: 1.2rem; max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box; }
     .tab-content { display: none; background: var(--card-bg); border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
     .tab-content.active { display: block; }
-
-    .meta-title { font-size: 0.85rem; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; margin-bottom: 0.5rem; font-weight: bold; }
-    .english-text { font-size: 1.2rem; font-weight: 600; color: var(--primary); line-height: 1.4; margin-bottom: 1rem; }
-    .translation { font-size: 0.95rem; color: #555; line-height: 1.4; margin-bottom: 1rem; padding-left: 10px; border-left: 3px solid #e0e0e0; }
-    .tip-box { background-color: #eef7fc; border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; color: #2c3e50; margin-bottom: 1rem; }
-    .tip-box strong { color: var(--accent); }
-
-    .btn-action { width: 100%; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-decoration: none; box-sizing: border-box; transition: opacity 0.2s ease; margin-top: 8px; }
-    .btn-action:active { opacity: 0.85; }
+    .meta-title { font-size: 0.8rem; color: var(--accent); font-weight: bold; margin-bottom: 0.5rem; }
+    .english-text { font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; }
+    .translation { font-size: 0.95rem; color: #555; margin-bottom: 1rem; padding-left: 10px; border-left: 3px solid #e0e0e0; }
+    .tip-box { background-color: #eef7fc; border-radius: 8px; padding: 10px; font-size: 0.85rem; margin-bottom: 1rem; }
+    .btn-action { width: 100%; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px; }
     .btn-audio { background-color: var(--audio-purple); }
     .btn-wpp { background-color: var(--whatsapp-green); }
     .btn-spotify { background-color: var(--spotify-green); }
     .btn-finish { background-color: #27ae60; margin-top: 20px; }
-
-    .word-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 8px; }
-    .word-info { flex: 1; padding-right: 10px; }
-    .word-en { font-weight: bold; color: var(--primary); font-size: 1.05rem; }
-    .word-pt { font-size: 0.9rem; color: #555; margin-top: 2px; }
-    .word-tag { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
-    .btn-add-word { background-color: #e67e22; color: white; border: none; border-radius: 6px; padding: 8px 12px; font-weight: bold; cursor: pointer; }
-
-    .flashcard { background: #fdfdfd; border: 2px solid #e2e8f0; border-radius: 12px; padding: 2rem 1rem; text-align: center; min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.03); margin-bottom: 1.5rem; }
-    .flashcard-back { display: none; border-top: 2px dashed #cbd5e1; margin-top: 1rem; padding-top: 1rem; width: 100%; }
+    .word-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+    .flashcard { background: #fdfdfd; border: 2px solid #e2e8f0; border-radius: 12px; padding: 2rem 1rem; text-align: center; cursor: pointer; margin-bottom: 1rem; }
+    .flashcard-back { display: none; border-top: 2px dashed #cbd5e1; margin-top: 1rem; padding-top: 1rem; }
     .anki-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .btn-anki { padding: 12px 4px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 0.85rem; cursor: pointer; }
-    .btn-hard { background-color: var(--anki-hard); }
-    .btn-good { background-color: var(--anki-good); }
-    .btn-easy { background-color: var(--anki-easy); }
+    .btn-anki { padding: 10px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
 
   <div id="lock-screen">
     <div class="pin-card">
-      <h2 style="margin-top:0;">English & Faith</h2>
+      <h2>English & Faith</h2>
       <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••" />
       <button class="btn-unlock" onclick="verifyPin()">Entrar</button>
       <div id="pin-error" class="pin-error">PIN incorreto.</div>
@@ -93,91 +59,77 @@
     <button class="tab-btn" onclick="openTab('chosen', event)">Chosen</button>
     <button class="tab-btn" onclick="openTab('esposa', event)">Esposa</button>
     <button class="tab-btn" onclick="openTab('noite', event)">Noite</button>
-    <button class="tab-btn anki-tab" onclick="openTab('palavras', event)">🗒 Palavras</button>
-    <button class="tab-btn anki-tab" onclick="openTab('anki', event)">📓 Revisão (<span id="anki-count">0</span>)</button>
+    <button class="tab-btn" onclick="openTab('palavras', event)">🗒 Palavras</button>
+    <button class="tab-btn" onclick="openTab('anki', event)">📓 Revisão (<span id="anki-count">0</span>)</button>
   </nav>
 
   <main>
     <div id="loading">Carregando dia...</div>
     <div id="content-area" style="display: none;">
-      <!-- Oração -->
-      <div id="tab-oracao" class="tab-content active"><div class="meta-title">Oração Matinal</div><div class="english-text" id="oracao-en"></div><div class="translation" id="oracao-pt"></div><div class="tip-box"><strong>Dica:</strong> <span id="oracao-tip"></span></div><button class="btn-action btn-audio" onclick="speakText('oracao-en')">🔊 Ouvir</button></div>
-      <!-- Versículo -->
-      <div id="tab-versiculo" class="tab-content"><div class="meta-title" id="versiculo-ref">Versículo</div><div class="english-text" id="versiculo-en"></div><div class="translation" id="versiculo-pt"></div><div class="tip-box"><strong>Dica:</strong> <span id="versiculo-tip"></span></div><button class="btn-action btn-audio" onclick="speakText('versiculo-en')">🔊 Ouvir</button></div>
-      <!-- Música -->
-      <div id="tab-musica" class="tab-content"><div class="meta-title" id="musica-title">Louvor</div><div class="english-text" id="musica-en"></div><div class="translation" id="musica-pt"></div><div class="tip-box"><strong>Dica:</strong> <span id="musica-tip"></span></div><button class="btn-action btn-audio" onclick="speakText('musica-en')">🔊 Ouvir</button><a id="btn-spotify-link" href="#" target="_blank" class="btn-action btn-spotify">🎧 Ouvir no Spotify</a></div>
-      <!-- Chosen -->
-      <div id="tab-chosen" class="tab-content"><div class="meta-title">The Chosen</div><div class="english-text" id="chosen-en"></div><div class="translation" id="chosen-pt"></div><div class="tip-box"><strong>Dica:</strong> <span id="chosen-tip"></span></div><button class="btn-action btn-audio" onclick="speakText('chosen-en')">🔊 Ouvir</button></div>
-      <!-- Esposa -->
-      <div id="tab-esposa" class="tab-content"><div class="meta-title">Bênção para Esposa</div><div class="english-text" id="esposa-en"></div><div class="translation" id="esposa-pt"></div><div class="tip-box"><strong>Dica:</strong> <span id="esposa-tip"></span></div><button class="btn-action btn-audio" onclick="speakText('esposa-en')">🔊 Ouvir</button><button class="btn-action btn-wpp" onclick="copyEsposa()">📋 Copiar</button></div>
-      <!-- Noite -->
-      <div id="tab-noite" class="tab-content"><div class="meta-title">Noite</div><div class="english-text" id="noite-en"></div><div class="translation" id="noite-pt"></div><div class="tip-box"><strong>Dica:</strong> <span id="noite-tip"></span></div><button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir</button><button class="btn-action btn-finish" onclick="finishDay()">✅ Finalizar este Dia</button></div>
-      <!-- Palavras -->
-      <div id="tab-palavras" class="tab-content"><div class="meta-title">Palavras do Dia</div><div id="words-list"></div></div>
-      <!-- Anki -->
-      <div id="tab-anki" class="tab-content"><div class="meta-title">Revisão (SRS)</div><div id="anki-empty" style="display:none; text-align:center; padding:1rem;">🎉 Tudo revisado!</div><div id="anki-card-area" style="display:none;"><div class="flashcard" onclick="flipAnkiCard()"><div class="english-text" id="anki-card-en"></div><div class="flashcard-back" id="anki-card-back"><div class="translation" id="anki-card-pt"></div><div class="tip-box" id="anki-card-tip"></div></div></div><div class="anki-controls" id="anki-controls" style="display:none;"><button class="btn-anki btn-hard" onclick="answerAnki('HARD')">Difícil</button><button class="btn-anki btn-good" onclick="answerAnki('GOOD')">Bom</button><button class="btn-anki btn-easy" onclick="answerAnki('EASY')">Fácil</button></div></div></div>
+      <div id="tab-oracao" class="tab-content active"><div class="meta-title">Oração</div><div class="english-text" id="oracao-en"></div><div class="translation" id="oracao-pt"></div><div class="tip-box" id="oracao-tip"></div><button class="btn-action btn-audio" onclick="speakText('oracao-en')">🔊 Ouvir</button></div>
+      <div id="tab-versiculo" class="tab-content"><div class="meta-title">Versículo</div><div class="english-text" id="versiculo-en"></div><div class="translation" id="versiculo-pt"></div><div class="tip-box" id="versiculo-tip"></div><button class="btn-action btn-audio" onclick="speakText('versiculo-en')">🔊 Ouvir</button></div>
+      <div id="tab-musica" class="tab-content"><div class="meta-title">Louvor</div><div class="english-text" id="musica-en"></div><div class="translation" id="musica-pt"></div><div class="tip-box" id="musica-tip"></div><button class="btn-action btn-audio" onclick="speakText('musica-en')">🔊 Ouvir</button></div>
+      <div id="tab-chosen" class="tab-content"><div class="meta-title">The Chosen</div><div class="english-text" id="chosen-en"></div><div class="translation" id="chosen-pt"></div><div class="tip-box" id="chosen-tip"></div><button class="btn-action btn-audio" onclick="speakText('chosen-en')">🔊 Ouvir</button></div>
+      <div id="tab-esposa" class="tab-content"><div class="meta-title">Para Esposa</div><div class="english-text" id="esposa-en"></div><div class="translation" id="esposa-pt"></div><div class="tip-box" id="esposa-tip"></div><button class="btn-action btn-audio" onclick="speakText('esposa-en')">🔊 Ouvir</button><button class="btn-action btn-wpp" onclick="copyEsposa()">📋 Copiar</button></div>
+      <div id="tab-noite" class="tab-content"><div class="meta-title">Noite</div><div class="english-text" id="noite-en"></div><div class="translation" id="noite-pt"></div><div class="tip-box" id="noite-tip"></div><button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir</button><button class="btn-action btn-finish" onclick="finishDay()">✅ Finalizar Dia</button></div>
+      <div id="tab-palavras" class="tab-content"><div class="meta-title">Vocabulário</div><div id="words-list"></div></div>
+      <div id="tab-anki" class="tab-content"><div class="meta-title">Revisão</div><div id="anki-empty" style="display:none; text-align:center;">🎉 Tudo revisado!</div><div id="anki-card-area" style="display:none;"><div class="flashcard" onclick="flipAnkiCard()"><div class="english-text" id="anki-card-en"></div><div class="flashcard-back" id="anki-card-back"><div class="translation" id="anki-card-pt"></div></div></div><div class="anki-controls" id="anki-controls" style="display:none;"><button class="btn-anki" style="background:var(--anki-hard)" onclick="answerAnki('HARD')">Difícil</button><button class="btn-anki" style="background:var(--anki-good)" onclick="answerAnki('GOOD')">Bom</button><button class="btn-anki" style="background:var(--anki-easy)" onclick="answerAnki('EASY')">Fácil</button></div></div></div>
     </div>
   </main>
 
   <script>
-    const API_URL = "https:https://script.google.com/macros/s/AKfycbxyEEKuPG4yyQTGewY2rDfIaGclTJ3xZXBarLZkk8GhNCzLF2e0y7oiiyhUdD34WN3Z/exec";
-    const CORRECT_PIN = "1304";
-    
-    function checkPinOnLoad() { if(localStorage.getItem("app_unlocked") === "true") { document.getElementById("lock-screen").style.display = "none"; fetchDailyContent(); } }
-    function verifyPin() { if(document.getElementById("pin-input").value === CORRECT_PIN) { localStorage.setItem("app_unlocked", "true"); location.reload(); } else { document.getElementById("pin-error").style.display = "block"; } }
-    function lockApp() { localStorage.removeItem("app_unlocked"); location.reload(); }
+    const API_URL = "https://script.google.com/macros/s/AKfycbxyEEKuPG4yyQTGewY2rDfIaGclTJ3xZXBarLZkk8GhNCzLF2e0y7oiiyhUdD34WN3Z/exec";
+    let cardsToReview = [], currentCardIndex = 0;
 
+    function verifyPin() { if(document.getElementById("pin-input").value === "1304") { localStorage.setItem("app_unlocked", "true"); location.reload(); } else { document.getElementById("pin-error").style.display = "block"; } }
+    function lockApp() { localStorage.removeItem("app_unlocked"); location.reload(); }
+    
     async function fetchDailyContent() {
-      const resp = await fetch(API_URL);
-      const res = await resp.json();
-      document.getElementById('dia-header').innerText = "(Dia " + res.diaAtual + ")";
-      render(res.data);
-      cardsToReview = res.cardsToReview;
-      updateAnkiTab();
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('tabs-nav').style.display = 'grid';
-      document.getElementById('content-area').style.display = 'block';
+      try {
+        const resp = await fetch(API_URL);
+        const res = await resp.json();
+        document.getElementById('dia-header').innerText = "(Dia " + res.diaAtual + ")";
+        render(res.data);
+        cardsToReview = res.cardsToReview;
+        updateAnkiTab();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('tabs-nav').style.display = 'grid';
+        document.getElementById('content-area').style.display = 'block';
+      } catch(e) { console.error(e); document.getElementById('loading').innerText = "Erro ao carregar dados."; }
     }
 
     function render(data) {
-      document.getElementById('oracao-en').innerText = data.oracao.en; document.getElementById('oracao-pt').innerText = data.oracao.pt; document.getElementById('oracao-tip').innerText = data.oracao.tip;
-      document.getElementById('versiculo-en').innerText = data.versiculo.en; document.getElementById('versiculo-pt').innerText = data.versiculo.pt; document.getElementById('versiculo-tip').innerText = data.versiculo.tip;
-      document.getElementById('musica-en').innerText = data.musica.en; document.getElementById('musica-pt').innerText = data.musica.pt; document.getElementById('musica-tip').innerText = data.musica.tip;
-      document.getElementById('chosen-en').innerText = data.the_chosen.en; document.getElementById('chosen-pt').innerText = data.the_chosen.pt; document.getElementById('chosen-tip').innerText = data.the_chosen.tip;
-      document.getElementById('esposa-en').innerText = data.esposa.en; document.getElementById('esposa-pt').innerText = data.esposa.pt; document.getElementById('esposa-tip').innerText = data.esposa.tip;
-      document.getElementById('noite-en').innerText = data.noite.en; document.getElementById('noite-pt').innerText = data.noite.pt; document.getElementById('noite-tip').innerText = data.noite.tip;
-      
-      const list = document.getElementById('words-list');
-      data.vocabulario_dia.forEach((w, i) => {
-        list.innerHTML += `<div class="word-item" id="w-${i}"><div class="word-info"><div class="word-tag">${w.tag}</div><div class="word-en">${w.en}</div><div class="word-pt">${w.pt}</div></div><button class="btn-add-word" onclick="addWord('${w.en}','${w.pt}','${w.tip}',${i})">➕</button></div>`;
+      ['oracao', 'versiculo', 'musica', 'chosen', 'esposa', 'noite'].forEach(k => {
+        document.getElementById(k+'-en').innerText = data[k==='chosen'?'the_chosen':k].en;
+        document.getElementById(k+'-pt').innerText = data[k==='chosen'?'the_chosen':k].pt;
+        document.getElementById(k+'-tip').innerText = data[k==='chosen'?'the_chosen':k].tip;
       });
+      const list = document.getElementById('words-list');
+      data.vocabulario_dia.forEach(w => list.innerHTML += `<div class="word-item"><div><strong>${w.en}</strong><br>${w.pt}</div></div>`);
     }
 
-    async function finishDay() {
-      if(!confirm("Avançar para o próximo dia?")) return;
-      await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'FINISH_DAY'}) });
-      location.reload();
+    function updateAnkiTab() {
+      document.getElementById('anki-count').innerText = cardsToReview.length;
+      if (cardsToReview.length === 0) { document.getElementById('anki-empty').style.display = 'block'; document.getElementById('anki-card-area').style.display = 'none'; } 
+      else { document.getElementById('anki-empty').style.display = 'none'; document.getElementById('anki-card-area').style.display = 'block'; showCurrentAnkiCard(); }
     }
 
-    async function addWord(en, pt, tip, i) {
-      document.getElementById('w-'+i).style.display = 'none';
-      await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'ADD', en, pt, tip}) });
+    function showCurrentAnkiCard() {
+      const card = cardsToReview[currentCardIndex];
+      document.getElementById('anki-card-en').innerText = card.en;
+      document.getElementById('anki-card-pt').innerText = card.pt;
+      document.getElementById('anki-card-back').style.display = 'none';
+      document.getElementById('anki-controls').style.display = 'none';
     }
 
-    function openTab(id, e) {
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-'+id).classList.add('active');
-      e.currentTarget.classList.add('active');
-    }
+    function flipAnkiCard() { document.getElementById('anki-card-back').style.display = 'block'; document.getElementById('anki-controls').style.display = 'grid'; }
+    async function answerAnki(q) { cardsToReview.splice(currentCardIndex, 1); updateAnkiTab(); }
+    async function finishDay() { if(confirm("Avançar para o próximo dia?")) { await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'FINISH_DAY'}) }); location.reload(); } }
+    function openTab(id, e) { document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); e.currentTarget.classList.add('active'); }
+    function speakText(id) { const msg = new SpeechSynthesisUtterance(document.getElementById(id).innerText); msg.lang = 'en-US'; window.speechSynthesis.speak(msg); }
+    function copyEsposa() { navigator.clipboard.writeText(document.getElementById('esposa-en').innerText + "\n\n" + document.getElementById('esposa-pt').innerText); alert("Copiado!"); }
 
-    function speakText(id) {
-      const msg = new SpeechSynthesisUtterance(document.getElementById(id).innerText);
-      msg.lang = 'en-US';
-      window.speechSynthesis.speak(msg);
-    }
-
-    checkPinOnLoad();
+    if(localStorage.getItem("app_unlocked") === "true") { document.getElementById("lock-screen").style.display = "none"; fetchDailyContent(); }
   </script>
 </body>
 </html>
