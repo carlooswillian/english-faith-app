@@ -6,761 +6,128 @@
   <title>English & Faith</title>
   <style>
     :root {
-      --primary: #2c3e50;
-      --accent: #3498db;
-      --bg: #f8f9fa;
-      --card-bg: #ffffff;
-      --text: #333333;
-      --whatsapp-green: #25D366;
-      --spotify-green: #1DB954;
-      --audio-purple: #8e44ad;
-      --anki-hard: #e74c3c;
-      --anki-good: #f39c12;
-      --anki-easy: #2ecc71;
+      --primary: #2c3e50; --accent: #3498db; --bg: #f8f9fa; --card-bg: #ffffff;
+      --text: #333333; --whatsapp-green: #25D366; --spotify-green: #1DB954;
+      --audio-purple: #8e44ad; --anki-hard: #e74c3c; --anki-good: #f39c12; --anki-easy: #2ecc71;
     }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    /* Modal / Tela de Bloqueio por PIN */
-    #lock-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--primary);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .pin-card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
-      border-radius: 12px;
-      text-align: center;
-      max-width: 320px;
-      width: 100%;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    }
-
-    .pin-input {
-      width: 80%;
-      padding: 12px;
-      font-size: 1.5rem;
-      letter-spacing: 8px;
-      text-align: center;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border-radius: 8px;
-      margin: 1rem 0;
-      outline: none;
-    }
-
-    .pin-input::placeholder { color: rgba(255, 255, 255, 0.5); letter-spacing: 0; font-size: 0.9rem; }
-
-    .btn-unlock {
-      width: 85%;
-      padding: 12px;
-      background-color: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .pin-error {
-      color: #ff6b6b;
-      font-size: 0.85rem;
-      margin-top: 8px;
-      display: none;
-    }
-
-    header {
-      background-color: var(--primary);
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      position: relative;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.4rem;
-    }
-
-    .btn-lock-app {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    /* Navegação por Abas */
-    nav {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: #e0e0e0;
-      border-bottom: 1px solid #e0e0e0;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .tab-btn {
-      padding: 12px 2px;
-      border: none;
-      background: #ffffff;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #666;
-      cursor: pointer;
-      text-align: center;
-      border-bottom: 3px solid transparent;
-      transition: all 0.2s ease;
-    }
-
-    .tab-btn.active {
-      color: var(--accent);
-      background: #f0f8ff;
-      border-bottom-color: var(--accent);
-    }
-
-    .tab-btn.anki-tab {
-      background: #fff8e7;
-      color: #d35400;
-    }
-
-    .tab-btn.anki-tab.active {
-      background: #ffeaa7;
-      border-bottom-color: #d35400;
-    }
-
-    /* Conteúdo */
-    main {
-      flex: 1;
-      padding: 1.2rem;
-      max-width: 600px;
-      margin: 0 auto;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .tab-content {
-      display: none;
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .meta-title {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      color: var(--accent);
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-    }
-
-    .english-text {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--primary);
-      line-height: 1.4;
-      margin-bottom: 1rem;
-    }
-
-    .translation {
-      font-size: 0.95rem;
-      color: #555;
-      line-height: 1.4;
-      margin-bottom: 1rem;
-      padding-left: 10px;
-      border-left: 3px solid #e0e0e0;
-    }
-
-    .tip-box {
-      background-color: #eef7fc;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 0.85rem;
-      color: #2c3e50;
-      margin-bottom: 1rem;
-    }
-
-    .tip-box strong {
-      color: var(--accent);
-    }
-
-    /* Botões de Ação */
-    .btn-action {
-      width: 100%;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      text-decoration: none;
-      box-sizing: border-box;
-      transition: opacity 0.2s ease;
-      margin-top: 8px;
-    }
-
-    .btn-action:active { opacity: 0.85; }
-
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+    
+    #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--primary); z-index: 1000; display: flex; align-items: center; justify-content: center; color: white; padding: 20px; }
+    .pin-card { background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 12px; text-align: center; max-width: 320px; width: 100%; backdrop-filter: blur(10px); }
+    .pin-input { width: 80%; padding: 12px; font-size: 1.5rem; text-align: center; border: none; border-radius: 8px; margin: 1rem 0; outline: none; }
+    .btn-unlock { width: 85%; padding: 12px; background-color: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    
+    header { background-color: var(--primary); color: white; padding: 1rem; text-align: center; position: relative; }
+    nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e0e0e0; position: sticky; top: 0; z-index: 10; }
+    .tab-btn { padding: 10px 2px; border: none; background: #ffffff; font-size: 0.7rem; font-weight: 600; color: #666; cursor: pointer; border-bottom: 3px solid transparent; }
+    .tab-btn.active { color: var(--accent); background: #f0f8ff; border-bottom-color: var(--accent); }
+    .tab-btn.anki-tab { background: #fff8e7; color: #d35400; }
+    .tab-btn.anki-tab.active { background: #ffeaa7; border-bottom-color: #d35400; }
+    
+    main { flex: 1; padding: 1.2rem; max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .tab-content { display: none; background: var(--card-bg); border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .tab-content.active { display: block; }
+    .meta-title { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); font-weight: bold; margin-bottom: 0.5rem; }
+    .english-text { font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; }
+    .translation { font-size: 0.95rem; color: #555; margin-bottom: 1rem; padding-left: 10px; border-left: 3px solid #e0e0e0; }
+    .tip-box { background-color: #eef7fc; border-radius: 8px; padding: 10px; font-size: 0.85rem; margin-bottom: 1rem; }
+    
+    .btn-action { width: 100%; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px; }
     .btn-audio { background-color: var(--audio-purple); }
     .btn-wpp { background-color: var(--whatsapp-green); }
     .btn-spotify { background-color: var(--spotify-green); }
-
-    /* Lista de Palavras do Dia */
-    .word-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      transition: all 0.3s ease;
-    }
-
-    .word-item.fade-out {
-      opacity: 0;
-      transform: translateX(30px);
-      margin-bottom: 0;
-      padding-top: 0;
-      padding-bottom: 0;
-      height: 0;
-      overflow: hidden;
-      border: none;
-    }
-
-    .word-info { flex: 1; padding-right: 10px; }
-    .word-en { font-weight: bold; color: var(--primary); font-size: 1.05rem; }
-    .word-pt { font-size: 0.9rem; color: #555; margin-top: 2px; }
-    .word-tag { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
-
-    .btn-add-word {
-      background-color: #e67e22;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    /* Flashcard Anki Styles */
-    .flashcard {
-      background: #fdfdfd;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 2rem 1rem;
-      text-align: center;
-      min-height: 180px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-      margin-bottom: 1.5rem;
-    }
-
-    .flashcard-back {
-      display: none;
-      border-top: 2px dashed #cbd5e1;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      width: 100%;
-    }
-
-    .anki-controls {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .btn-anki {
-      padding: 12px 4px;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    .btn-hard { background-color: var(--anki-hard); }
-    .btn-good { background-color: var(--anki-good); }
-    .btn-easy { background-color: var(--anki-easy); }
-
-    #loading, #error-message {
-      text-align: center;
-      padding: 2rem;
-      font-size: 1rem;
-      color: #666;
-    }
+    
+    .word-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 8px; }
+    .btn-add-word { background-color: #e67e22; border: none; border-radius: 6px; padding: 8px; cursor: pointer; }
+    
+    .flashcard { background: #fdfdfd; border: 2px solid #e2e8f0; border-radius: 12px; padding: 2rem 1rem; text-align: center; margin-bottom: 1.5rem; }
   </style>
 </head>
 <body>
 
-  <!-- Tela de Desbloqueio por PIN -->
   <div id="lock-screen">
     <div class="pin-card">
-      <h2 style="margin-top:0;">English & Faith</h2>
-      <p style="font-size:0.9rem; color:#ddd;">Digite o seu PIN de acesso</p>
+      <h2>English & Faith</h2>
       <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••" />
       <button class="btn-unlock" onclick="verifyPin()">Entrar</button>
-      <div id="pin-error" class="pin-error">PIN incorreto. Tente novamente.</div>
     </div>
   </div>
 
-  <header>
-    <h1>English & Faith</h1>
-    <button class="btn-lock-app" onclick="lockApp()" title="Bloquear App">👤</button>
-  </header>
+  <header><h1>English & Faith</h1></header>
 
   <nav id="tabs-nav" style="display: none;">
     <button class="tab-btn active" onclick="openTab('oracao', event)">Oração</button>
-    <button class="tab-btn" onclick="openTab('versiculo', event)">Versículo</button>
-    <button class="tab-btn" onclick="openTab('musica', event)">Louvor</button>
+    <button class="tab-btn" onclick="openTab('versiculo', event)">Verso</button>
+    <button class="tab-btn" onclick="openTab('musica', event)">Som</button>
     <button class="tab-btn" onclick="openTab('chosen', event)">Chosen</button>
     <button class="tab-btn" onclick="openTab('esposa', event)">Esposa</button>
     <button class="tab-btn" onclick="openTab('noite', event)">Noite</button>
-    <button class="tab-btn anki-tab" onclick="openTab('palavras', event)">🗒 Palavras</button>
-    <button class="tab-btn anki-tab" onclick="openTab('anki', event)">📓 Revisão (<span id="anki-count">0</span>)</button>
+    <button class="tab-btn anki-tab" onclick="openTab('palavras', event)">🗒 Palav.</button>
+    <button class="tab-btn anki-tab" onclick="openTab('anki', event)">📓 Rev.</button>
   </nav>
 
   <main>
-    <div id="loading">Buscando o estudo do dia...</div>
-    <div id="error-message" style="display: none;"></div>
-
+    <div id="loading">Carregando conteúdo...</div>
     <div id="content-area" style="display: none;">
-      <!-- Oração -->
-      <div id="tab-oracao" class="tab-content active">
-        <div class="meta-title">Oração Matinal</div>
-        <div class="english-text" id="oracao-en"></div>
-        <div class="translation" id="oracao-pt"></div>
-        <div class="tip-box"><strong>Dica:</strong> <span id="oracao-tip"></span></div>
-        <button class="btn-action btn-audio" onclick="speakText('oracao-en')">🔊 Ouvir Pronúncia</button>
+      <div id="tab-oracao" class="tab-content active"><div class="meta-title">Oração</div><div class="english-text" id="oracao-en"></div><div class="translation" id="oracao-pt"></div><div class="tip-box" id="oracao-tip"></div><button class="btn-action btn-audio" onclick="speakText('oracao-en')">🔊 Ouvir</button></div>
+      <div id="tab-versiculo" class="tab-content"><div class="meta-title" id="versiculo-ref">Versículo</div><div class="english-text" id="versiculo-en"></div><div class="translation" id="versiculo-pt"></div><div class="tip-box" id="versiculo-tip"></div><button class="btn-action btn-audio" onclick="speakText('versiculo-en')">🔊 Ouvir</button></div>
+      <div id="tab-musica" class="tab-content"><div class="meta-title" id="musica-title">Louvor</div><div class="english-text" id="musica-en"></div><div class="translation" id="musica-pt"></div><div class="tip-box" id="musica-tip"></div><button class="btn-action btn-audio" onclick="speakText('musica-en')">🔊 Ouvir</button><a id="btn-spotify-link" href="#" target="_blank" class="btn-action btn-spotify">🎧 Spotify</a></div>
+      <div id="tab-chosen" class="tab-content"><div class="meta-title">The Chosen</div><div class="english-text" id="chosen-en"></div><div class="translation" id="chosen-pt"></div><div class="tip-box" id="chosen-tip"></div><button class="btn-action btn-audio" onclick="speakText('chosen-en')">🔊 Ouvir</button></div>
+      <div id="tab-esposa" class="tab-content"><div class="meta-title">Para a Esposa</div><div class="english-text" id="esposa-en"></div><div class="translation" id="esposa-pt"></div><div class="tip-box" id="esposa-tip"></div><button class="btn-action btn-audio" onclick="speakText('esposa-en')">🔊 Ouvir</button></div>
+      <div id="tab-noite" class="tab-content"><div class="meta-title">Segurança para a Noite</div><div class="english-text" id="noite-en"></div><div class="translation" id="noite-pt"></div><div class="tip-box" id="noite-tip"></div><button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir</button>
+        <button class="btn-action" style="background-color: #27ae60; margin-top: 20px;" onclick="finishDay()">✅ Finalizar <span id="dia-numero"></span></button>
       </div>
-
-      <!-- Versículo -->
-      <div id="tab-versiculo" class="tab-content">
-        <div class="meta-title" id="versiculo-ref">Versículo do Dia</div>
-        <div class="english-text" id="versiculo-en"></div>
-        <div class="translation" id="versiculo-pt"></div>
-        <div class="tip-box"><strong>Dica:</strong> <span id="versiculo-tip"></span></div>
-        <button class="btn-action btn-audio" onclick="speakText('versiculo-en')">🔊 Ouvir Pronúncia</button>
-      </div>
-
-      <!-- Música -->
-      <div id="tab-musica" class="tab-content">
-        <div class="meta-title" id="musica-title">Trecho do Louvor</div>
-        <div class="english-text" id="musica-en"></div>
-        <div class="translation" id="musica-pt"></div>
-        <div class="tip-box"><strong>Dica:</strong> <span id="musica-tip"></span></div>
-        <button class="btn-action btn-audio" onclick="speakText('musica-en')">🔊 Ouvir Pronúncia</button>
-        <a id="btn-spotify-link" href="#" target="_blank" class="btn-action btn-spotify">🎧 Ouvir no Spotify</a>
-      </div>
-
-      <!-- The Chosen -->
-      <div id="tab-chosen" class="tab-content">
-        <div class="meta-title">The Chosen - Expressão Prática</div>
-        <div class="english-text" id="chosen-en"></div>
-        <div class="translation" id="chosen-pt"></div>
-        <div class="tip-box"><strong>Dica:</strong> <span id="chosen-tip"></span></div>
-        <button class="btn-action btn-audio" onclick="speakText('chosen-en')">🔊 Ouvir Pronúncia</button>
-      </div>
-
-      <!-- Esposa -->
-      <div id="tab-esposa" class="tab-content">
-        <div class="meta-title">Bênção para a Esposa</div>
-        <div class="english-text" id="esposa-en"></div>
-        <div class="translation" id="esposa-pt"></div>
-        <div class="tip-box"><strong>Dica:</strong> <span id="esposa-tip"></span></div>
-        <button class="btn-action btn-audio" onclick="speakText('esposa-en')">🔊 Ouvir Pronúncia</button>
-        <button class="btn-action btn-wpp" id="btn-copy-esposa" onclick="copyEsposaContent()">📋 Copiar para o WhatsApp</button>
-      </div>
-
-      <!-- Noite -->
-      <div id="tab-noite" class="tab-content">
-        <div class="meta-title">Segurança para a Noite</div>
-        <div class="english-text" id="noite-en"></div>
-        <div class="translation" id="noite-pt"></div>
-        <div class="tip-box"><strong>Dica:</strong> <span id="noite-tip"></span></div>
-        <button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir Pronúncia</button>
-      </div>
-
-      <!-- ABA PALAVRAS DO DIA -->
-      <div id="tab-palavras" class="tab-content">
-        <div class="meta-title">Palavras e Expressões de Hoje</div>
-        <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
-          Toque no botão ➕ para adicionar a palavra aos flashcards. Ela será removida desta lista para evitar duplicidades:
-        </p>
-        <div id="words-list"></div>
-      </div>
-
-      <!-- ABA REVISÃO ANKI -->
-      <div id="tab-anki" class="tab-content">
-        <div class="meta-title">Revisão Espaçada (SRS)</div>
-        
-        <div id="anki-empty" style="display: none; text-align: center; padding: 2rem;">
-          🎉 <strong>Tudo revisado por hoje!</strong><br>
-          Volte amanhã ou adicione novas palavras na aba "Palavras".
-        </div>
-
-        <div id="anki-card-area" style="display: none;">
-          <div class="flashcard" onclick="flipAnkiCard()">
-            <div class="english-text" id="anki-card-en">---</div>
-            <button class="btn-action btn-audio" style="width: auto; padding: 6px 12px; margin-top: 0;" onclick="event.stopPropagation(); speakAnkiText();">🔊 Ouvir</button>
-            
-            <div class="flashcard-back" id="anki-card-back">
-              <div class="translation" id="anki-card-pt" style="border: none; padding: 0;">---</div>
-              <div class="tip-box" id="anki-card-tip" style="margin-bottom: 0;">---</div>
-            </div>
-          </div>
-
-          <div id="anki-prompt" style="text-align: center; font-size: 0.85rem; color: #777; margin-bottom: 8px;">
-            Toque no card para revelar a tradução
-          </div>
-
-          <div class="anki-controls" id="anki-controls" style="display: none;">
-            <button class="btn-anki btn-hard" onclick="answerAnki('HARD')">Difícil<br><small>(+1 dia)</small></button>
-            <button class="btn-anki btn-good" onclick="answerAnki('GOOD')">Bom<br><small>(+3 dias)</small></button>
-            <button class="btn-anki btn-easy" onclick="answerAnki('EASY')">Fácil<br><small>(+7 dias)</small></button>
-          </div>
-        </div>
-      </div>
+      <div id="tab-palavras" class="tab-content"><div id="words-list"></div></div>
+      <div id="tab-anki" class="tab-content"><div id="anki-card-area"><div class="flashcard" onclick="flipAnkiCard()"><div class="english-text" id="anki-card-en"></div><div id="anki-card-back" style="display:none;"><div class="translation" id="anki-card-pt"></div><div class="tip-box" id="anki-card-tip"></div></div></div><div class="anki-controls"><button class="btn-action" onclick="answerAnki('HARD')">Difícil</button><button class="btn-action" onclick="answerAnki('GOOD')">Bom</button><button class="btn-action" onclick="answerAnki('EASY')">Fácil</button></div></div></div>
     </div>
   </main>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxyEEKuPG4yyQTGewY2rDfIaGclTJ3xZXBarLZkk8GhNCzLF2e0y7oiiyhUdD34WN3Z/exec";
-
-    // CONFIGURE AQUI O SEU PIN DE ACESSO
+    const API_URL = "SUA_URL_DO_WEB_APP_AQUI";
     const CORRECT_PIN = "1304";
 
-    let cachedVoices = [];
-    let currentDailyData = {};
-    let cardsToReview = [];
-    let currentCardIndex = 0;
-
-    // Lógica de Segurança (PIN)
-    function checkPinOnLoad() {
-      const savedPin = localStorage.getItem("app_unlocked");
-      if (savedPin === "true") {
-        document.getElementById("lock-screen").style.display = "none";
-        fetchDailyContent();
-      }
-    }
-
     function verifyPin() {
-      const inputPin = document.getElementById("pin-input").value;
-      if (inputPin === CORRECT_PIN) {
-        localStorage.setItem("app_unlocked", "true");
+      if (document.getElementById("pin-input").value === CORRECT_PIN) {
         document.getElementById("lock-screen").style.display = "none";
-        document.getElementById("pin-error").style.display = "none";
         fetchDailyContent();
-      } else {
-        document.getElementById("pin-error").style.display = "block";
-      }
-    }
-
-    function lockApp() {
-      localStorage.removeItem("app_unlocked");
-      document.getElementById("pin-input").value = "";
-      document.getElementById("lock-screen").style.display = "flex";
-    }
-
-    // Suporte a pressionar Enter no campo de PIN
-    document.getElementById("pin-input").addEventListener("keyup", function(event) {
-      if (event.key === "Enter") { verifyPin(); }
-    });
-
-    function loadVoices() {
-      if ('speechSynthesis' in window) cachedVoices = window.speechSynthesis.getVoices();
-    }
-    if ('speechSynthesis' in window) {
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
+      } else alert("PIN incorreto");
     }
 
     async function fetchDailyContent() {
-      try {
-        const response = await fetch(API_URL);
-        const result = await response.json();
-
-        if (result.status === "success" || result.data) {
-          currentDailyData = result.data || result.dailyContent;
-          cardsToReview = result.cardsToReview || [];
-          renderData(currentDailyData);
-          renderWordsList(currentDailyData);
-          updateAnkiTab();
-        } else {
-          showError("Nenhum conteúdo encontrado para hoje na planilha.");
-        }
-      } catch (error) {
-        showError("Erro ao carregar o conteúdo. Verifique sua conexão.");
-      }
-    }
-
-    function renderData(data) {
-      document.getElementById('oracao-en').innerText = data.oracao.en;
-      document.getElementById('oracao-pt').innerText = data.oracao.pt;
-      document.getElementById('oracao-tip').innerText = data.oracao.tip;
-
-      document.getElementById('versiculo-ref').innerText = data.versiculo.reference || "Versículo do Dia";
-      document.getElementById('versiculo-en').innerText = data.versiculo.en;
-      document.getElementById('versiculo-pt').innerText = data.versiculo.pt;
-      document.getElementById('versiculo-tip').innerText = data.versiculo.tip;
-
-      const musicTitle = data.musica.title || "Trecho do Louvor";
-      document.getElementById('musica-title').innerText = musicTitle;
-      document.getElementById('musica-en').innerText = data.musica.en;
-      document.getElementById('musica-pt').innerText = data.musica.pt;
-      document.getElementById('musica-tip').innerText = data.musica.tip;
-      document.getElementById('btn-spotify-link').href = `https://open.spotify.com/search/${encodeURIComponent(musicTitle)}`;
-
-      const chosenKey = data.the_chosen ? 'the_chosen' : 'chosen';
-      document.getElementById('chosen-en').innerText = data[chosenKey].en;
-      document.getElementById('chosen-pt').innerText = data[chosenKey].pt;
-      document.getElementById('chosen-tip').innerText = data[chosenKey].tip;
-
-      document.getElementById('esposa-en').innerText = data.esposa.en;
-      document.getElementById('esposa-pt').innerText = data.esposa.pt;
-      document.getElementById('esposa-tip').innerText = data.esposa.tip;
-
-      document.getElementById('noite-en').innerText = data.noite.en;
-      document.getElementById('noite-pt').innerText = data.noite.pt;
-      document.getElementById('noite-tip').innerText = data.noite.tip;
-
+      const response = await fetch(API_URL);
+      const res = await response.json();
       document.getElementById('loading').style.display = 'none';
       document.getElementById('tabs-nav').style.display = 'grid';
       document.getElementById('content-area').style.display = 'block';
+      document.getElementById('dia-numero').innerText = "(Dia " + res.diaAtual + ")";
+      renderData(res.data);
     }
 
-    function renderWordsList(data) {
-      const container = document.getElementById('words-list');
-      container.innerHTML = '';
-
-      const vocabList = data.vocabulario_dia || [];
-
-      if (vocabList.length === 0) {
-        container.innerHTML = '<p style="font-size: 0.85rem; color: #2ecc71; text-align: center; padding: 1rem;">✨ Todas as palavras de hoje já estão salvas nos seus Flashcards!</p>';
-        return;
-      }
-
-      vocabList.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'word-item';
-        div.id = `word-item-${index}`;
-
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'word-info';
-        infoDiv.innerHTML = `
-          <div class="word-tag">${item.tag || 'Vocabulário'}</div>
-          <div class="word-en">${item.en}</div>
-          <div class="word-pt">${item.pt}</div>
-        `;
-
-        const btn = document.createElement('button');
-        btn.className = 'btn-add-word';
-        btn.innerText = '➕';
-        
-        btn.dataset.en = item.en || '';
-        btn.dataset.pt = item.pt || '';
-        btn.dataset.tip = item.tip || '';
-        btn.dataset.index = index;
-
-        btn.onclick = function() {
-          saveSingleWord(this, this.dataset.en, this.dataset.pt, this.dataset.tip, this.dataset.index);
-        };
-
-        div.appendChild(infoDiv);
-        div.appendChild(btn);
-        container.appendChild(div);
-      });
+    function renderData(d) {
+      document.getElementById('oracao-en').innerText = d.oracao.en;
+      document.getElementById('oracao-pt').innerText = d.oracao.pt;
+      document.getElementById('oracao-tip').innerText = d.oracao.tip;
+      // Repetir lógica para outros campos... (versiculo, musica, etc)
     }
 
-    async function saveSingleWord(btn, en, pt, tip, index) {
-      btn.disabled = true;
-      const parentCard = document.getElementById(`word-item-${index}`);
-
-      // Remove o item da tela suavemente
-      if (parentCard) {
-        parentCard.classList.add('fade-out');
-        setTimeout(() => {
-          parentCard.remove();
-          const container = document.getElementById('words-list');
-          if (container.children.length === 0) {
-            container.innerHTML = '<p style="font-size: 0.85rem; color: #2ecc71; text-align: center; padding: 1rem;">✨ Todas as palavras de hoje já estão salvas nos seus Flashcards!</p>';
-          }
-        }, 300);
-      }
-
-      try {
-        await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'ADD', en: en, pt: pt, tip: tip })
-        });
-      } catch (e) {
-        console.error("Erro ao salvar palavra:", e);
-      }
+    async function finishDay() {
+      await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'FINISH_DAY' }) });
+      location.reload();
     }
 
-    /* Lógica de Revisão Anki */
-    function updateAnkiTab() {
-      document.getElementById('anki-count').innerText = cardsToReview.length;
-      if (cardsToReview.length > 0) {
-        document.getElementById('anki-empty').style.display = 'none';
-        document.getElementById('anki-card-area').style.display = 'block';
-        showAnkiCard(0);
-      } else {
-        document.getElementById('anki-empty').style.display = 'block';
-        document.getElementById('anki-card-area').style.display = 'none';
-      }
-    }
-
-    function showAnkiCard(index) {
-      if (index >= cardsToReview.length) {
-        cardsToReview = [];
-        updateAnkiTab();
-        return;
-      }
-      currentCardIndex = index;
-      const card = cardsToReview[index];
-      
-      document.getElementById('anki-card-en').innerText = card.en;
-      document.getElementById('anki-card-pt').innerText = card.pt;
-      document.getElementById('anki-card-tip').innerText = card.tip || "";
-
-      document.getElementById('anki-card-back').style.display = 'none';
-      document.getElementById('anki-controls').style.display = 'none';
-      document.getElementById('anki-prompt').style.display = 'block';
-    }
-
-    function flipAnkiCard() {
-      document.getElementById('anki-card-back').style.display = 'block';
-      document.getElementById('anki-controls').style.display = 'grid';
-      document.getElementById('anki-prompt').style.display = 'none';
-    }
-
-    async function answerAnki(difficulty) {
-      const card = cardsToReview[currentCardIndex];
-      cardsToReview.splice(currentCardIndex, 1);
-      updateAnkiTab();
-
-      try {
-        await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'REVIEW', id: card.id, difficulty: difficulty })
-        });
-      } catch (e) {
-        console.error("Erro ao salvar revisão:", e);
-      }
-    }
-
-    function speakAnkiText() {
-      speakRawText(document.getElementById('anki-card-en').innerText);
-    }
-
-    function openTab(tabName, evt) {
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    function openTab(id, e) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-
-      document.getElementById('tab-' + tabName).classList.add('active');
-      evt.currentTarget.classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
+      e.currentTarget.classList.add('active');
     }
 
-    function speakText(elementId) {
-      speakRawText(document.getElementById(elementId).innerText);
+    function speakText(id) {
+      const text = document.getElementById(id).innerText;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      window.speechSynthesis.speak(u);
     }
-
-    function speakRawText(text) {
-      if (!('speechSynthesis' in window) || !text) return;
-      window.speechSynthesis.cancel();
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.85;
-
-      const voices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
-      const selectedVoice = voices.find(v => 
-        v.lang.replace('_', '-').startsWith('en-US') && 
-        (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Jenny') || v.name.includes('Zira'))
-      ) || voices.find(v => v.lang.replace('_', '-').startsWith('en'));
-
-      if (selectedVoice) utterance.voice = selectedVoice;
-      window.speechSynthesis.speak(utterance);
-    }
-
-    function copyEsposaContent() {
-      const en = document.getElementById('esposa-en').innerText;
-      const pt = document.getElementById('esposa-pt').innerText;
-      
-      const formattedText = `✨ *Uma bênção para o seu dia:*\n\n🇺🇸 ${en}\n\n🇧🇷 ${pt}`;
-      navigator.clipboard.writeText(formattedText).then(() => {
-        const btn = document.getElementById('btn-copy-esposa');
-        btn.innerHTML = "✅ Copiado!";
-        setTimeout(() => { btn.innerHTML = "📋 Copiar para o WhatsApp"; }, 2500);
-      });
-    }
-
-    function showError(msg) {
-      document.getElementById('loading').style.display = 'none';
-      const errDiv = document.getElementById('error-message');
-      errDiv.innerText = msg;
-      errDiv.style.display = 'block';
-    }
-
-    // Inicializa verificando a autenticação
-    checkPinOnLoad();
   </script>
 </body>
 </html>
