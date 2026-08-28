@@ -260,7 +260,15 @@
     .btn-audio { background-color: var(--audio-purple); }
     .btn-wpp { background-color: var(--whatsapp-green); }
     .btn-spotify { background-color: var(--spotify-green); }
-    .btn-complete { background-color: #27ae60; margin-top: 2rem; font-size: 1.1rem;}
+        .btn-complete { 
+      background-color: transparent; 
+      color: #95a5a6; 
+      border: 1px solid #bdc3c7;
+      margin-top: 2.5rem; 
+      font-size: 0.9rem;
+      padding: 10px;
+    }
+
 
     /* Lista de Palavras do Dia */
     .word-item {
@@ -437,14 +445,18 @@
         <button class="btn-action btn-wpp" id="btn-copy-esposa" onclick="copyEsposaContent()">📋 Copiar para o WhatsApp</button>
       </div>
 
-      <!-- Noite -->
+            <!-- Noite -->
       <div id="tab-noite" class="tab-content">
         <div class="meta-title">Segurança para a Noite</div>
         <div class="english-text" id="noite-en"></div>
         <div class="translation" id="noite-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="noite-tip"></span></div>
         <button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir Pronúncia</button>
+        
+        <!-- BOTÃO FINALIZAR DIA MOVIDO PARA CÁ -->
+        <button class="btn-action btn-complete" id="btn-finish-day" onclick="completeDay()">✅ Concluir Dia e Avançar</button>
       </div>
+
 
       <!-- ABA PALAVRAS DO DIA -->
       <div id="tab-palavras" class="tab-content">
@@ -486,9 +498,6 @@
           </div>
         </div>
       </div>
-      
-      <!-- BOTÃO FINALIZAR DIA -->
-      <button class="btn-action btn-complete" id="btn-finish-day" onclick="completeDay()">✅ Concluir Dia</button>
       
     </div>
   </main>
