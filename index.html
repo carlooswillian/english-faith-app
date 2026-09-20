@@ -48,6 +48,32 @@
       box-sizing: border-box;
     }
 
+    /* TELA DE CARREGAMENTO DA IA */
+    #ai-loading-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     .pin-card {
       background: rgba(255, 255, 255, 0.1);
       padding: 2rem;
@@ -73,9 +99,7 @@
       outline: none;
     }
 
-    .pin-input::placeholder { color: rgba(255, 255, 255, 0.5); letter-spacing: 0; font-size: 0.9rem; }
-
-    .btn-unlock {
+    .btn-unlock, .btn-generate {
       width: 85%;
       padding: 12px;
       background-color: var(--accent);
@@ -85,6 +109,14 @@
       font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
+    }
+    
+    .btn-generate {
+      width: auto;
+      margin-top: 15px;
+      padding: 12px 24px;
+      background-color: #8e44ad;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     .pin-error {
@@ -107,10 +139,7 @@
       gap: 10px;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 1.4rem;
-    }
+    header h1 { margin: 0; font-size: 1.4rem; }
     
     .day-badge {
       background-color: var(--accent);
@@ -131,7 +160,6 @@
       cursor: pointer;
     }
 
-    /* Navegação por Abas */
     nav {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -162,17 +190,9 @@
       border-bottom-color: var(--accent);
     }
 
-    .tab-btn.anki-tab {
-      background: #fff8e7;
-      color: #d35400;
-    }
+    .tab-btn.anki-tab { background: #fff8e7; color: #d35400; }
+    .tab-btn.anki-tab.active { background: #ffeaa7; border-bottom-color: #d35400; }
 
-    .tab-btn.anki-tab.active {
-      background: #ffeaa7;
-      border-bottom-color: #d35400;
-    }
-
-    /* Conteúdo */
     main {
       flex: 1;
       padding: 1.2rem;
@@ -191,9 +211,7 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
 
-    .tab-content.active {
-      display: block;
-    }
+    .tab-content.active { display: block; }
 
     .meta-title {
       font-size: 0.85rem;
@@ -230,11 +248,6 @@
       margin-bottom: 1rem;
     }
 
-    .tip-box strong {
-      color: var(--accent);
-    }
-
-    /* Botões de Ação */
     .btn-action {
       width: 100%;
       color: white;
@@ -249,21 +262,16 @@
       justify-content: center;
       gap: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-top: 8px;
       text-decoration: none;
       box-sizing: border-box;
-      transition: opacity 0.2s ease;
-      margin-top: 8px;
     }
-
-    .btn-action:active { opacity: 0.85; }
 
     .btn-audio { background-color: var(--audio-purple); }
     .btn-wpp { background-color: var(--whatsapp-green); }
     .btn-spotify { background-color: var(--spotify-green); }
     .btn-complete { background-color: #27ae60; margin-top: 2rem; font-size: 1.1rem;}
 
-
-    /* Lista de Palavras do Dia */
     .word-item {
       display: flex;
       justify-content: space-between;
@@ -276,21 +284,10 @@
       transition: all 0.3s ease;
     }
 
-    .word-item.fade-out {
-      opacity: 0;
-      transform: translateX(30px);
-      margin-bottom: 0;
-      padding-top: 0;
-      padding-bottom: 0;
-      height: 0;
-      overflow: hidden;
-      border: none;
-    }
-
     .word-info { flex: 1; padding-right: 10px; }
     .word-en { font-weight: bold; color: var(--primary); font-size: 1.05rem; }
     .word-pt { font-size: 0.9rem; color: #555; margin-top: 2px; }
-    .word-tag { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
+    .word-tag { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; font-weight: bold; }
 
     .btn-add-word {
       background-color: #e67e22;
@@ -303,7 +300,6 @@
       font-size: 1rem;
     }
 
-    /* Flashcard Anki Styles */
     .flashcard {
       background: #fdfdfd;
       border: 2px solid #e2e8f0;
@@ -316,7 +312,6 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
       margin-bottom: 1.5rem;
     }
 
@@ -369,6 +364,16 @@
     </div>
   </div>
 
+  <!-- Tela de Carregamento IA -->
+  <div id="ai-loading-screen">
+    <div class="spinner"></div>
+    <h2 style="margin-bottom: 10px;">Gerando novo estudo...</h2>
+    <p style="font-size: 0.9rem; max-width: 80%; color: #ccc;">
+      A Inteligência Artificial (Gemini) está criando um conteúdo único para você hoje. 
+      Isso pode levar de 10 a 20 segundos.
+    </p>
+  </div>
+
   <header>
     <h1>English & Faith</h1>
     <span class="day-badge" id="day-badge">Dia --</span>
@@ -388,7 +393,14 @@
 
   <main>
     <div id="loading">Buscando o estudo do dia...</div>
-    <div id="error-message" style="display: none;"></div>
+    
+    <!-- Área de Erro modificada para aceitar botão da IA -->
+    <div id="error-message" style="display: none;">
+      <p id="error-text"></p>
+      <div id="generate-area" style="display: none; margin-top: 20px;">
+        <button class="btn-generate" onclick="callGeminiGenerator()">✨ Gerar Estudo com IA</button>
+      </div>
+    </div>
 
     <div id="content-area" style="display: none;">
       <!-- Oração -->
@@ -438,24 +450,21 @@
         <button class="btn-action btn-wpp" id="btn-copy-esposa" onclick="copyEsposaContent()">📋 Copiar para o WhatsApp</button>
       </div>
 
-            <!-- Noite -->
+      <!-- Noite -->
       <div id="tab-noite" class="tab-content">
         <div class="meta-title">Segurança para a Noite</div>
         <div class="english-text" id="noite-en"></div>
         <div class="translation" id="noite-pt"></div>
         <div class="tip-box"><strong>Dica:</strong> <span id="noite-tip"></span></div>
         <button class="btn-action btn-audio" onclick="speakText('noite-en')">🔊 Ouvir Pronúncia</button>
-        
-        <!-- BOTÃO FINALIZAR DIA MOVIDO PARA CÁ -->
         <button class="btn-action btn-complete" id="btn-finish-day" onclick="completeDay()">✅ Concluir Dia e Avançar</button>
       </div>
-
 
       <!-- ABA PALAVRAS DO DIA -->
       <div id="tab-palavras" class="tab-content">
         <div class="meta-title">Palavras e Expressões de Hoje</div>
         <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
-          Toque no botão ➕ para adicionar a palavra aos flashcards. Ela será removida desta lista para evitar duplicidades:
+          Toque no botão ➕ para adicionar a palavra aos flashcards.
         </p>
         <div id="words-list"></div>
       </div>
@@ -463,27 +472,21 @@
       <!-- ABA REVISÃO ANKI -->
       <div id="tab-anki" class="tab-content">
         <div class="meta-title">Revisão Espaçada (SRS)</div>
-        
         <div id="anki-empty" style="display: none; text-align: center; padding: 2rem;">
           🎉 <strong>Tudo revisado por hoje!</strong><br>
-          Volte amanhã ou adicione novas palavras na aba "Palavras".
         </div>
-
         <div id="anki-card-area" style="display: none;">
           <div class="flashcard" onclick="flipAnkiCard()">
             <div class="english-text" id="anki-card-en">---</div>
             <button class="btn-action btn-audio" style="width: auto; padding: 6px 12px; margin-top: 0;" onclick="event.stopPropagation(); speakAnkiText();">🔊 Ouvir</button>
-            
             <div class="flashcard-back" id="anki-card-back">
               <div class="translation" id="anki-card-pt" style="border: none; padding: 0;">---</div>
               <div class="tip-box" id="anki-card-tip" style="margin-bottom: 0;">---</div>
             </div>
           </div>
-
           <div id="anki-prompt" style="text-align: center; font-size: 0.85rem; color: #777; margin-bottom: 8px;">
             Toque no card para revelar a tradução
           </div>
-
           <div class="anki-controls" id="anki-controls" style="display: none;">
             <button class="btn-anki btn-hard" onclick="answerAnki('HARD')">Difícil<br><small>(+1 dia)</small></button>
             <button class="btn-anki btn-good" onclick="answerAnki('GOOD')">Bom<br><small>(+3 dias)</small></button>
@@ -497,16 +500,15 @@
 
   <script>
     // COLOQUE AQUI A SUA URL GERADA APÓS O NOVO DEPLOY DO SCRIPT
-    const API_URL = "https://script.google.com/macros/s/AKfycbz62XXIBFOAU2MKUmKDD_dCYdcgdOY7TQpJgjKkye1IWKraSMVlBWqU-yH0NDBjDp22/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbywQ-B3q1w-V_tXv6c2u93Jb_A-k1C7d5xTz0eK42yP2p/exec";
 
     const CORRECT_PIN = "1304";
-
     let cachedVoices = [];
     let currentDailyData = {};
     let cardsToReview = [];
     let currentCardIndex = 0;
+    let globalCurrentDay = 1;
 
-    // Lógica de Segurança (PIN)
     function checkPinOnLoad() {
       const savedPin = localStorage.getItem("app_unlocked");
       if (savedPin === "true") {
@@ -533,40 +535,68 @@
       document.getElementById("lock-screen").style.display = "flex";
     }
 
-    document.getElementById("pin-input").addEventListener("keyup", function(event) {
-      if (event.key === "Enter") { verifyPin(); }
-    });
-
-    function loadVoices() {
-      if ('speechSynthesis' in window) cachedVoices = window.speechSynthesis.getVoices();
-    }
     if ('speechSynthesis' in window) {
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
+      window.speechSynthesis.onvoiceschanged = () => { cachedVoices = window.speechSynthesis.getVoices(); };
     }
 
     async function fetchDailyContent() {
       document.getElementById('loading').style.display = 'block';
       document.getElementById('content-area').style.display = 'none';
       document.getElementById('error-message').style.display = 'none';
+      document.getElementById('generate-area').style.display = 'none';
 
       try {
-        const response = await fetch(API_URL);
+        // Redirecionamento é padrão, mas Web Apps do GAS exigem tratamento de erro padrão.
+        const response = await fetch(API_URL); 
         const result = await response.json();
 
+        globalCurrentDay = result.currentDay;
+        document.getElementById('day-badge').innerText = "Dia " + result.currentDay;
+
         if (result.status === "success" && result.data) {
-          document.getElementById('day-badge').innerText = "Dia " + result.currentDay;
           currentDailyData = result.data;
           cardsToReview = result.cardsToReview || [];
-          
           renderData(currentDailyData);
           renderWordsList(currentDailyData);
           updateAnkiTab();
+        } else if (result.status === "not_found") {
+          showError(result.message, true); // True para mostrar o botão de Gerar IA
         } else {
-          showError(result.message || "Nenhum conteúdo encontrado para hoje na planilha.");
+          showError(result.message || "Erro desconhecido na planilha.", false);
         }
       } catch (error) {
-        showError("Erro ao carregar o conteúdo. Verifique sua conexão ou se a URL da API está correta.");
+        showError("Erro de conexão. Verifique se a URL da API está correta e atualizada após o novo deploy.", false);
+      }
+    }
+
+    // --- NOVA FUNÇÃO: GERAR ESTUDO COM IA ---
+    async function callGeminiGenerator() {
+      // Exibe a tela preta de carregamento
+      document.getElementById('ai-loading-screen').style.display = 'flex';
+      
+      try {
+        // NOTA: Para ler respostas de erro do backend GAS (e não usar no-cors), usamos fetch padrão
+        // Se houver problema de CORS aqui, o Apps Script Web App permite post padrão se publicado para "Qualquer pessoa"
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'GENERATE_STUDY', day: globalCurrentDay })
+        });
+
+        const result = await response.json();
+        
+        document.getElementById('ai-loading-screen').style.display = 'none';
+
+        if(result.status === "success") {
+          // O estudo foi criado na planilha. Recarrega a tela para buscar.
+          fetchDailyContent();
+        } else {
+          alert("Falha na Inteligência Artificial: \n\n" + result.message);
+        }
+
+      } catch (e) {
+        document.getElementById('ai-loading-screen').style.display = 'none';
+        alert("Erro de conexão com o servidor ao tentar acionar a IA. Verifique os logs.");
       }
     }
 
@@ -608,42 +638,23 @@
     function renderWordsList(data) {
       const container = document.getElementById('words-list');
       container.innerHTML = '';
-
       const vocabList = data.vocabulario_dia || [];
-
       if (vocabList.length === 0) {
-        container.innerHTML = '<p style="font-size: 0.85rem; color: #2ecc71; text-align: center; padding: 1rem;">✨ Todas as palavras de hoje já estão salvas nos seus Flashcards!</p>';
+        container.innerHTML = '<p style="text-align: center; color: #2ecc71;">✨ Todas as palavras de hoje já estão salvas!</p>';
         return;
       }
-
       vocabList.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'word-item';
         div.id = `word-item-${index}`;
-
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'word-info';
-        infoDiv.innerHTML = `
-          <div class="word-tag">${item.tag || 'Vocabulário'}</div>
-          <div class="word-en">${item.en}</div>
-          <div class="word-pt">${item.pt}</div>
+        div.innerHTML = `
+          <div class="word-info">
+            <div class="word-tag">${item.tag || 'Vocabulário'}</div>
+            <div class="word-en">${item.en}</div>
+            <div class="word-pt">${item.pt}</div>
+          </div>
+          <button class="btn-add-word" onclick="saveSingleWord(this, '${item.en}', '${item.pt}', '${item.tip}', ${index})">➕</button>
         `;
-
-        const btn = document.createElement('button');
-        btn.className = 'btn-add-word';
-        btn.innerText = '➕';
-        
-        btn.dataset.en = item.en || '';
-        btn.dataset.pt = item.pt || '';
-        btn.dataset.tip = item.tip || '';
-        btn.dataset.index = index;
-
-        btn.onclick = function() {
-          saveSingleWord(this, this.dataset.en, this.dataset.pt, this.dataset.tip, this.dataset.index);
-        };
-
-        div.appendChild(infoDiv);
-        div.appendChild(btn);
         container.appendChild(div);
       });
     }
@@ -651,18 +662,9 @@
     async function saveSingleWord(btn, en, pt, tip, index) {
       btn.disabled = true;
       const parentCard = document.getElementById(`word-item-${index}`);
-
       if (parentCard) {
-        parentCard.classList.add('fade-out');
-        setTimeout(() => {
-          parentCard.remove();
-          const container = document.getElementById('words-list');
-          if (container.children.length === 0) {
-            container.innerHTML = '<p style="font-size: 0.85rem; color: #2ecc71; text-align: center; padding: 1rem;">✨ Todas as palavras de hoje já estão salvas nos seus Flashcards!</p>';
-          }
-        }, 300);
+        parentCard.style.opacity = '0.3';
       }
-
       try {
         await fetch(API_URL, {
           method: 'POST',
@@ -670,12 +672,10 @@
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: 'ADD', en: en, pt: pt, tip: tip })
         });
-      } catch (e) {
-        console.error("Erro ao salvar palavra:", e);
-      }
+        if(parentCard) parentCard.remove();
+      } catch (e) { console.error(e); }
     }
 
-    /* Lógica de Revisão Anki */
     function updateAnkiTab() {
       document.getElementById('anki-count').innerText = cardsToReview.length;
       if (cardsToReview.length > 0) {
@@ -689,18 +689,12 @@
     }
 
     function showAnkiCard(index) {
-      if (index >= cardsToReview.length) {
-        cardsToReview = [];
-        updateAnkiTab();
-        return;
-      }
+      if (index >= cardsToReview.length) { updateAnkiTab(); return; }
       currentCardIndex = index;
       const card = cardsToReview[index];
-      
       document.getElementById('anki-card-en').innerText = card.en;
       document.getElementById('anki-card-pt').innerText = card.pt;
       document.getElementById('anki-card-tip').innerText = card.tip || "";
-
       document.getElementById('anki-card-back').style.display = 'none';
       document.getElementById('anki-controls').style.display = 'none';
       document.getElementById('anki-prompt').style.display = 'block';
@@ -713,53 +707,35 @@
     }
 
     async function answerAnki(difficulty) {
-      const card = cardsToReview[currentCardIndex];
-      cardsToReview.splice(currentCardIndex, 1);
+      const card = cardsToReview.splice(currentCardIndex, 1)[0];
       updateAnkiTab();
-
-      try {
-        await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'REVIEW', id: card.id, difficulty: difficulty })
-        });
-      } catch (e) {
-        console.error("Erro ao salvar revisão:", e);
-      }
-    }
-
-    function speakAnkiText() {
-      speakRawText(document.getElementById('anki-card-en').innerText);
+      fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'REVIEW', id: card.id, difficulty: difficulty })
+      });
     }
 
     function openTab(tabName, evt) {
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-
       document.getElementById('tab-' + tabName).classList.add('active');
       evt.currentTarget.classList.add('active');
     }
 
-    function speakText(elementId) {
-      speakRawText(document.getElementById(elementId).innerText);
-    }
+    function speakText(id) { speakRawText(document.getElementById(id).innerText); }
+    function speakAnkiText() { speakRawText(document.getElementById('anki-card-en').innerText); }
 
     function speakRawText(text) {
       if (!('speechSynthesis' in window) || !text) return;
       window.speechSynthesis.cancel();
-
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-US';
       utterance.rate = 0.85;
-
-      const voices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
-      const selectedVoice = voices.find(v => 
-        v.lang.replace('_', '-').startsWith('en-US') && 
-        (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Jenny') || v.name.includes('Zira'))
-      ) || voices.find(v => v.lang.replace('_', '-').startsWith('en'));
-
+      const voices = window.speechSynthesis.getVoices();
+      const selectedVoice = voices.find(v => v.lang.startsWith('en-US') && (v.name.includes('Natural') || v.name.includes('Google'))) || voices.find(v => v.lang.startsWith('en'));
       if (selectedVoice) utterance.voice = selectedVoice;
       window.speechSynthesis.speak(utterance);
     }
@@ -767,9 +743,7 @@
     function copyEsposaContent() {
       const en = document.getElementById('esposa-en').innerText;
       const pt = document.getElementById('esposa-pt').innerText;
-      
-      const formattedText = `✨ *Uma bênção para o seu dia:*\n\n🇺🇸 ${en}\n\n🇧🇷 ${pt}`;
-      navigator.clipboard.writeText(formattedText).then(() => {
+      navigator.clipboard.writeText(`✨ *Uma bênção para o seu dia:*\n\n🇺🇸 ${en}\n\n🇧🇷 ${pt}`).then(() => {
         const btn = document.getElementById('btn-copy-esposa');
         btn.innerHTML = "✅ Copiado!";
         setTimeout(() => { btn.innerHTML = "📋 Copiar para o WhatsApp"; }, 2500);
@@ -777,13 +751,10 @@
     }
 
     async function completeDay() {
-      const confirmacao = confirm("Tem certeza de que concluiu as tarefas de hoje? Isso avançará para o próximo dia.");
-      if (!confirmacao) return;
-
+      if (!confirm("Concluiu as tarefas de hoje? Isso avançará para o próximo dia.")) return;
       const btn = document.getElementById('btn-finish-day');
       btn.innerText = "⏳ Atualizando...";
       btn.disabled = true;
-
       try {
         await fetch(API_URL, {
           method: 'POST',
@@ -791,26 +762,17 @@
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action: 'COMPLETE_DAY' })
         });
-        
-        // Aguarda um pouquinho e recarrega a página para puxar o novo dia
-        setTimeout(() => {
-          btn.innerText = "✅ Concluir Dia";
-          btn.disabled = false;
-          fetchDailyContent(); // Chama novamente a função para puxar o novo dia
-        }, 1500);
-
+        setTimeout(() => { btn.innerText = "✅ Concluir Dia"; btn.disabled = false; fetchDailyContent(); }, 1500);
       } catch (e) {
-        alert("Erro ao finalizar o dia. Tente novamente.");
-        btn.innerText = "✅ Concluir Dia";
-        btn.disabled = false;
+        alert("Erro. Tente novamente."); btn.innerText = "✅ Concluir Dia"; btn.disabled = false;
       }
     }
 
-    function showError(msg) {
+    function showError(msg, showGenerateBtn = false) {
       document.getElementById('loading').style.display = 'none';
-      const errDiv = document.getElementById('error-message');
-      errDiv.innerText = msg;
-      errDiv.style.display = 'block';
+      document.getElementById('error-text').innerText = msg;
+      document.getElementById('error-message').style.display = 'block';
+      document.getElementById('generate-area').style.display = showGenerateBtn ? 'block' : 'none';
     }
 
     checkPinOnLoad();
