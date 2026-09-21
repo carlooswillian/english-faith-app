@@ -57,10 +57,11 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: center; /* Centralização horizontal e vertical garantida */
       color: white;
       text-align: center;
       padding: 20px;
+      box-sizing: border-box;
     }
     
     .spinner {
@@ -72,6 +73,18 @@
       animation: spin 1s ease-in-out infinite;
       margin-bottom: 20px;
     }
+
+    /* Spinner menor para o carregamento inicial */
+    .spinner-small {
+      width: 35px;
+      height: 35px;
+      border: 4px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 15px;
+    }
+
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .pin-card {
@@ -343,7 +356,20 @@
     .btn-good { background-color: var(--anki-good); }
     .btn-easy { background-color: var(--anki-easy); }
 
-    #loading, #error-message {
+    /* Estilização atualizada para manter conteúdo centralizado no início */
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 50vh; /* Mantém o texto no meio da tela na área branca */
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.1rem;
+      color: #666;
+    }
+    
+    #error-message {
       text-align: center;
       padding: 2rem;
       font-size: 1rem;
@@ -364,13 +390,13 @@
     </div>
   </div>
 
-  <!-- Tela de Carregamento IA -->
+  <!-- Tela de Carregamento IA (Centralizada e Texto Reduzido) -->
   <div id="ai-loading-screen">
     <div class="spinner"></div>
     <h2 style="margin-bottom: 10px;">Gerando novo estudo...</h2>
-    <p style="font-size: 0.9rem; max-width: 80%; color: #ccc;">
-      A Inteligência Artificial (Gemini) está criando um conteúdo único para você hoje. 
-      Isso pode levar de 10 a 20 segundos.
+    <p style="font-size: 0.95rem; max-width: 85%; color: #ccc;">
+      A Inteligência Artificial (Gemini) está criando um conteúdo único para você hoje.<br><br>
+      <strong>Isso levará apenas alguns segundos.</strong>
     </p>
   </div>
 
@@ -392,9 +418,12 @@
   </nav>
 
   <main>
-    <div id="loading">Buscando o estudo do dia...</div>
+    <!-- Área de carregamento inicial (agora com flexbox para centralizar na página e spinner) -->
+    <div id="loading">
+      <div class="spinner-small"></div>
+      <div>Buscando o estudo do dia...</div>
+    </div>
     
-    <!-- Área de Erro modificada para aceitar botão da IA -->
     <div id="error-message" style="display: none;">
       <p id="error-text"></p>
       <div id="generate-area" style="display: none; margin-top: 20px;">
@@ -540,13 +569,12 @@
     }
 
     async function fetchDailyContent() {
-      document.getElementById('loading').style.display = 'block';
+      document.getElementById('loading').style.display = 'flex'; // Modificado para manter a centralização Flexbox
       document.getElementById('content-area').style.display = 'none';
       document.getElementById('error-message').style.display = 'none';
       document.getElementById('generate-area').style.display = 'none';
 
       try {
-        // Redirecionamento é padrão, mas Web Apps do GAS exigem tratamento de erro padrão.
         const response = await fetch(API_URL); 
         const result = await response.json();
 
@@ -560,7 +588,7 @@
           renderWordsList(currentDailyData);
           updateAnkiTab();
         } else if (result.status === "not_found") {
-          showError(result.message, true); // True para mostrar o botão de Gerar IA
+          showError(result.message, true);
         } else {
           showError(result.message || "Erro desconhecido na planilha.", false);
         }
@@ -569,14 +597,10 @@
       }
     }
 
-    // --- NOVA FUNÇÃO: GERAR ESTUDO COM IA ---
     async function callGeminiGenerator() {
-      // Exibe a tela preta de carregamento
       document.getElementById('ai-loading-screen').style.display = 'flex';
       
       try {
-        // NOTA: Para ler respostas de erro do backend GAS (e não usar no-cors), usamos fetch padrão
-        // Se houver problema de CORS aqui, o Apps Script Web App permite post padrão se publicado para "Qualquer pessoa"
         const response = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
@@ -588,7 +612,6 @@
         document.getElementById('ai-loading-screen').style.display = 'none';
 
         if(result.status === "success") {
-          // O estudo foi criado na planilha. Recarrega a tela para buscar.
           fetchDailyContent();
         } else {
           alert("Falha na Inteligência Artificial: \n\n" + result.message);
