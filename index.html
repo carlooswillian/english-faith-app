@@ -287,6 +287,21 @@
     .btn-wpp { background-color: var(--whatsapp-green); }
     .btn-spotify { background-color: var(--spotify-green); }
     .btn-complete { background-color: #27ae60; margin-top: 2rem; font-size: 1.1rem;}
+    
+    /* Novo Botão Frase no Anki */
+    .btn-phrase { background-color: #34495e; }
+    
+    .anki-phrase-box {
+      display: none;
+      font-style: italic;
+      color: #334155;
+      margin-top: 15px;
+      padding: 12px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 1rem;
+      border-left: 4px solid var(--accent);
+    }
 
     .word-item {
       display: flex;
@@ -503,10 +518,20 @@
         <div id="anki-empty" style="display: none; text-align: center; padding: 2rem;">
           🎉 <strong>Tudo revisado por hoje!</strong><br>
         </div>
+        
         <div id="anki-card-area" style="display: none;">
           <div class="flashcard" onclick="flipAnkiCard()">
             <div class="english-text" id="anki-card-en">---</div>
-            <button class="btn-action btn-audio" style="width: auto; padding: 6px 12px; margin-top: 0;" onclick="event.stopPropagation(); speakAnkiText();">🔊 Ouvir</button>
+            
+            <!-- NOVOS BOTÕES: OUVIR E FRASE -->
+            <div style="display: flex; gap: 8px; justify-content: center; width: 100%;">
+              <button class="btn-action btn-audio" style="width: auto; padding: 6px 12px; margin-top: 0;" onclick="event.stopPropagation(); speakAnkiText();">🔊 Ouvir</button>
+              <button class="btn-action btn-phrase" id="btn-show-phrase" style="width: auto; padding: 6px 12px; margin-top: 0; display: none;" onclick="event.stopPropagation(); showAnkiPhrase();">📖 Frase</button>
+            </div>
+            
+            <!-- CAIXA DA FRASE -->
+            <div class="anki-phrase-box" id="anki-card-phrase" onclick="event.stopPropagation(); speakPhraseText();"></div>
+
             <div class="flashcard-back" id="anki-card-back">
               <div class="translation" id="anki-card-pt" style="border: none; padding: 0;">---</div>
               <div class="tip-box" id="anki-card-tip" style="margin-bottom: 0;">---</div>
@@ -527,6 +552,7 @@
   </main>
 
   <script>
+    // === ATENÇÃO: Atualize com sua URL do Apps Script abaixo caso ela tenha mudado ===
     const API_URL = "https://script.google.com/macros/s/AKfycbz62XXIBFOAU2MKUmKDD_dCYdcgdOY7TQpJgjKkye1IWKraSMVlBWqU-yH0NDBjDp22/exec";
 
     const CORRECT_PIN = "1304";
@@ -656,7 +682,6 @@
       document.getElementById('content-area').style.display = 'block';
     }
 
-    // CORREÇÃO APLICADA AQUI: Enviamos apenas o (index) para a função do botão
     function renderWordsList(data) {
       const container = document.getElementById('words-list');
       container.innerHTML = '';
@@ -681,7 +706,6 @@
       });
     }
 
-    // CORREÇÃO APLICADA AQUI: Nova função captura os dados da memória, evitando aspas no HTML
     async function saveWordByIndex(btn, index) {
       btn.disabled = true;
       const parentCard = document.getElementById(`word-item-${index}`);
@@ -700,7 +724,8 @@
             action: 'ADD', 
             en: item.en || '', 
             pt: item.pt || '', 
-            tip: item.tip || '' 
+            tip: item.tip || '',
+            phrase: item.phrase || '' // Enviando a frase também!
           })
         });
         if(parentCard) parentCard.remove();
@@ -728,9 +753,23 @@
       if (index >= cardsToReview.length) { updateAnkiTab(); return; }
       currentCardIndex = index;
       const card = cardsToReview[index];
+      
       document.getElementById('anki-card-en').innerText = card.en;
       document.getElementById('anki-card-pt').innerText = card.pt;
       document.getElementById('anki-card-tip').innerText = card.tip || "";
+      
+      // Lógica da Frase
+      const phraseBox = document.getElementById('anki-card-phrase');
+      const btnPhrase = document.getElementById('btn-show-phrase');
+      phraseBox.style.display = 'none'; 
+      
+      if (card.phrase && card.phrase.trim() !== "") {
+        phraseBox.innerText = card.phrase;
+        btnPhrase.style.display = 'block'; 
+      } else {
+        btnPhrase.style.display = 'none'; 
+      }
+
       document.getElementById('anki-card-back').style.display = 'none';
       document.getElementById('anki-controls').style.display = 'none';
       document.getElementById('anki-prompt').style.display = 'block';
@@ -763,6 +802,17 @@
 
     function speakText(id) { speakRawText(document.getElementById(id).innerText); }
     function speakAnkiText() { speakRawText(document.getElementById('anki-card-en').innerText); }
+    function speakPhraseText() { speakRawText(document.getElementById('anki-card-phrase').innerText); }
+
+    function showAnkiPhrase() {
+      const phraseBox = document.getElementById('anki-card-phrase');
+      if (phraseBox.style.display === 'none') {
+         phraseBox.style.display = 'block';
+         speakPhraseText();
+      } else {
+         phraseBox.style.display = 'none';
+      }
+    }
 
     function speakRawText(text) {
       if (!('speechSynthesis' in window) || !text) return;
