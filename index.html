@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>English & Faith</title>
-    <!-- Configurações PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2c3e50">
   <link rel="apple-touch-icon" href="icon-192x192.png">
@@ -37,7 +36,6 @@
       min-height: 100vh;
     }
 
-    /* Modal / Tela de Bloqueio por PIN */
     #lock-screen {
       position: fixed;
       top: 0;
@@ -55,7 +53,6 @@
       box-sizing: border-box;
     }
 
-    /* TELA DE CARREGAMENTO DA IA */
     #ai-loading-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -64,7 +61,7 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: center; /* Centralização horizontal e vertical garantida */
+      justify-content: center;
       color: white;
       text-align: center;
       padding: 20px;
@@ -81,7 +78,6 @@
       margin-bottom: 20px;
     }
 
-    /* Spinner menor para o carregamento inicial */
     .spinner-small {
       width: 35px;
       height: 35px;
@@ -363,13 +359,12 @@
     .btn-good { background-color: var(--anki-good); }
     .btn-easy { background-color: var(--anki-easy); }
 
-    /* Estilização atualizada para manter conteúdo centralizado no início */
     #loading {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 50vh; /* Mantém o texto no meio da tela na área branca */
+      min-height: 50vh;
       text-align: center;
       padding: 2rem;
       font-size: 1.1rem;
@@ -386,7 +381,6 @@
 </head>
 <body>
 
-  <!-- Tela de Desbloqueio por PIN -->
   <div id="lock-screen">
     <div class="pin-card">
       <h2 style="margin-top:0;">English & Faith</h2>
@@ -397,7 +391,6 @@
     </div>
   </div>
 
-  <!-- Tela de Carregamento IA (Centralizada e Texto Reduzido) -->
   <div id="ai-loading-screen">
     <div class="spinner"></div>
     <h2 style="margin-bottom: 10px;">Gerando novo estudo...</h2>
@@ -425,7 +418,6 @@
   </nav>
 
   <main>
-    <!-- Área de carregamento inicial (agora com flexbox para centralizar na página e spinner) -->
     <div id="loading">
       <div class="spinner-small"></div>
       <div>Buscando o estudo do dia...</div>
@@ -535,7 +527,6 @@
   </main>
 
   <script>
-    // COLOQUE AQUI A SUA URL GERADA APÓS O NOVO DEPLOY DO SCRIPT
     const API_URL = "https://script.google.com/macros/s/AKfycbz62XXIBFOAU2MKUmKDD_dCYdcgdOY7TQpJgjKkye1IWKraSMVlBWqU-yH0NDBjDp22/exec";
 
     const CORRECT_PIN = "1304";
@@ -576,7 +567,7 @@
     }
 
     async function fetchDailyContent() {
-      document.getElementById('loading').style.display = 'flex'; // Modificado para manter a centralização Flexbox
+      document.getElementById('loading').style.display = 'flex'; 
       document.getElementById('content-area').style.display = 'none';
       document.getElementById('error-message').style.display = 'none';
       document.getElementById('generate-area').style.display = 'none';
@@ -665,6 +656,7 @@
       document.getElementById('content-area').style.display = 'block';
     }
 
+    // CORREÇÃO APLICADA AQUI: Enviamos apenas o (index) para a função do botão
     function renderWordsList(data) {
       const container = document.getElementById('words-list');
       container.innerHTML = '';
@@ -683,27 +675,41 @@
             <div class="word-en">${item.en}</div>
             <div class="word-pt">${item.pt}</div>
           </div>
-          <button class="btn-add-word" onclick="saveSingleWord(this, '${item.en}', '${item.pt}', '${item.tip}', ${index})">➕</button>
+          <button class="btn-add-word" onclick="saveWordByIndex(this, ${index})">➕</button>
         `;
         container.appendChild(div);
       });
     }
 
-    async function saveSingleWord(btn, en, pt, tip, index) {
+    // CORREÇÃO APLICADA AQUI: Nova função captura os dados da memória, evitando aspas no HTML
+    async function saveWordByIndex(btn, index) {
       btn.disabled = true;
       const parentCard = document.getElementById(`word-item-${index}`);
       if (parentCard) {
         parentCard.style.opacity = '0.3';
       }
+      
+      const item = currentDailyData.vocabulario_dia[index];
+      
       try {
         await fetch(API_URL, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'ADD', en: en, pt: pt, tip: tip })
+          body: JSON.stringify({ 
+            action: 'ADD', 
+            en: item.en || '', 
+            pt: item.pt || '', 
+            tip: item.tip || '' 
+          })
         });
         if(parentCard) parentCard.remove();
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error(e);
+        btn.disabled = false;
+        if(parentCard) parentCard.style.opacity = '1';
+        alert("Erro ao adicionar palavra. Tente novamente.");
+      }
     }
 
     function updateAnkiTab() {
@@ -808,7 +814,6 @@
     checkPinOnLoad();
   </script>
 
-  <!-- Script de Registro do PWA -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
